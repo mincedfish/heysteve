@@ -50,7 +50,8 @@ const TrailMap = () => {
   useEffect(() => {
     const fetchTrailStatuses = async () => {
       try {
-        const response = await fetch("/trailStatuses.json")
+        const response = await fetch("/heysteve/trailStatuses.json");
+
         if (!response.ok) {
           throw new Error(`Failed to fetch file: ${response.statusText}`)
         }
