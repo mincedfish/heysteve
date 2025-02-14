@@ -48,7 +48,7 @@ const TrailMap = () => {
   useEffect(() => {
     const fetchTrailStatuses = async () => {
       try {
-        const response = await fetch(`${process.env.PUBLIC_URL}/trailStatuses.json`)
+        const response = await fetch("/trailStatuses.json") // ✅ Corrected file path
         if (!response.ok) {
           throw new Error(`Failed to fetch file: ${response.statusText}`)
         }
