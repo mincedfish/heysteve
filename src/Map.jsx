@@ -68,6 +68,25 @@ const TrailMap = () => {
     fetchTrailStatuses()
   }, [])
 
+  // Function to format the date in MM-DD-YYYY format (California time)
+  const formatDate = (dateString) => {
+    const date = new Date(dateString)
+    const options = {
+      weekday: 'short', // Abbreviated day name
+      year: 'numeric',
+      month: '2-digit', // Numeric month
+      day: '2-digit',   // Numeric day
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit',
+      timeZone: 'America/Los_Angeles', // California timezone
+      hour12: true,
+    }
+
+    // Format date in MM-DD-YYYY
+    return new Intl.DateTimeFormat('en-US', options).format(date)
+  }
+
   if (error) {
     return <div>Error loading trail statuses: {error}</div>
   }
@@ -87,7 +106,7 @@ const TrailMap = () => {
         const conditionDetails = trailData.conditionDetails || "Condition details not available"
         const temperature = trailData.temperature || "Temperature data not available"
         const weatherConditions = trailData.weatherConditions || "Weather conditions not available"
-        const lastChecked = trailData.lastChecked || "Data not available"
+        const lastChecked = trailData.lastChecked ? formatDate(trailData.lastChecked) : "Data not available"
         const notes = trailData.notes || "No additional notes"
 
         return (
