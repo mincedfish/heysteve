@@ -51,7 +51,8 @@ const TrailMap = () => {
 
   return (
     <MapContainer
-      center={[37.9061, -122.5957]} // A general center point for the map
+      center={[37.9061, -122.5957]}
+      zoom={9}
       style={{ height: '500px', width: '100%' }}
       ref={mapRef}
     >
