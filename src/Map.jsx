@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
-import config from './config'; // Import the config.js file
+import React, { useState, useMemo } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import config from "./config"; // Import the config.js file
 
 // Define trail locations
 const trails = [
@@ -30,20 +30,6 @@ const createDefaultIcon = () => {
   });
 };
 
-// Component to fit bounds
-function FitBoundsToMarkers() {
-  const map = useMap();
-
-  useEffect(() => {
-    if (map) {
-      const bounds = L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]));
-      map.fitBounds(bounds, { padding: [50, 50] });
-    }
-  }, [map]);
-
-  return null;
-}
-
 const TrailMap = () => {
   const [weatherData, setWeatherData] = useState(null);
 
@@ -60,14 +46,14 @@ const TrailMap = () => {
     }
   };
 
+  // Calculate bounds for all trails
+  const bounds = useMemo(() => {
+    return L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]));
+  }, []);
+
   return (
-    <MapContainer
-      center={[37.9061, -122.5957]}
-      zoom={9}
-      style={{ height: "500px", width: "100%" }}
-    >
+    <MapContainer bounds={bounds} style={{ height: "500px", width: "100%" }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <FitBoundsToMarkers /> {/* This component ensures the map zooms out to fit all markers */}
 
       {trails.map((trail) => {
         const defaultIcon = createDefaultIcon();
