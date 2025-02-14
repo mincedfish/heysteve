@@ -21,7 +21,7 @@ const TrailMap = () => {
     { name: 'Crockett Hills Regional Park', lat: 38.0480, lon: -122.2905 }
   ];
 
-  const [weatherData, setWeatherData] = useState({});
+  const [weatherData, setWeatherData] = useState(null);
   const mapRef = useRef();
 
   // Create a default marker icon
@@ -35,18 +35,16 @@ const TrailMap = () => {
   };
 
   // Fetch weather information from Weatherbit API
-  const fetchWeather = async (lat, lon, trailName) => {
+  const fetchWeather = async (lat, lon) => {
     try {
       const response = await fetch(
         `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${config.WEATHER_API_KEY}`
       );
       const data = await response.json();
-      setWeatherData((prevData) => ({
-        ...prevData,
-        [trailName]: data.data[0] // Store weather data for each trail
-      }));
+      setWeatherData(data.data[0]); // Set weather data for the clicked trail
     } catch (error) {
       console.error('Error fetching weather data:', error);
+      setWeatherData(null);
     }
   };
 
@@ -56,9 +54,9 @@ const TrailMap = () => {
       const bounds = L.latLngBounds(
         trails.map((trail) => [trail.lat, trail.lon])
       );
-      mapRef.current.fitBounds(bounds); // Adjust map bounds to fit all markers
+      mapRef.current.fitBounds(bounds); // Fit map to bounds of all markers
     }
-  }, [trails]); // Ensure this runs when the trails data is available
+  }, [trails]);
 
   return (
     <MapContainer
@@ -66,7 +64,6 @@ const TrailMap = () => {
       zoom={9}
       style={{ height: '500px', width: '100%' }}
       ref={mapRef}
-      scrollWheelZoom={true} // Enable zoom with scroll wheel
     >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
@@ -79,20 +76,20 @@ const TrailMap = () => {
             position={[trail.lat, trail.lon]}
             icon={defaultIcon}
             eventHandlers={{
-              click: () => fetchWeather(trail.lat, trail.lon, trail.name) // Fetch weather data on marker click
+              click: () => fetchWeather(trail.lat, trail.lon)
             }}
           >
             <Popup>
               <div>
                 <h3>{trail.name}</h3>
-                {weatherData[trail.name] ? (
-                  <>
+                {weatherData ? (
+                  <div>
                     <p>Weather at {trail.name}:</p>
-                    <p>Temperature: {weatherData[trail.name].temp}°C</p>
-                    <p>Weather: {weatherData[trail.name].weather.description}</p>
-                    <p>Humidity: {weatherData[trail.name].rh}%</p>
-                    <p>Wind Speed: {weatherData[trail.name].wind_spd} m/s</p>
-                  </>
+                    <p>Temperature: {weatherData.temp}°C</p>
+                    <p>Weather: {weatherData.weather.description}</p>
+                    <p>Humidity: {weatherData.rh}%</p>
+                    <p>Wind Speed: {weatherData.wind_spd} m/s</p>
+                  </div>
                 ) : (
                   <p>Loading weather information...</p>
                 )}
