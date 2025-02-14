@@ -78,12 +78,26 @@ const TrailMap = () => {
       <FitBoundsToMarkers />
       {trails.map((trail) => {
         const defaultIcon = createDefaultIcon()
-        const rideability = trailStatuses[trail.name]?.rideability || "Data not available"
+
+        // Directly access trail status data from the object using the trail name
+        const trailData = trailStatuses[trail.name]
+        const rideability = trailData?.status || "Data not available"
+        const conditionDetails = trailData?.conditionDetails || "Condition details not available"
+        const temperature = trailData?.temperature || "Temperature data not available"
+        const weatherConditions = trailData?.weatherConditions || "Weather conditions not available"
+        const lastChecked = trailData?.lastChecked || "Data not available"
+        const notes = trailData?.notes || "No additional notes"
+
         return (
           <Marker key={trail.name} position={[trail.lat, trail.lon]} icon={defaultIcon}>
             <Popup>
               <h3>{trail.name}</h3>
               <p><strong>Rideability:</strong> {rideability}</p>
+              <p><strong>Condition:</strong> {conditionDetails}</p>
+              <p><strong>Temperature:</strong> {temperature}</p>
+              <p><strong>Weather Conditions:</strong> {weatherConditions}</p>
+              <p><strong>Last Checked:</strong> {lastChecked}</p>
+              <p><strong>Notes:</strong> {notes}</p>
             </Popup>
           </Marker>
         )
