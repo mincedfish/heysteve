@@ -20,7 +20,6 @@ const trails = [
   { name: "Crockett Hills Regional Park", lat: 38.048, lon: -122.2905 },
 ]
 
-// Create a default marker icon
 const createDefaultIcon = () => {
   return new L.Icon({
     iconUrl: `https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png`,
@@ -30,7 +29,6 @@ const createDefaultIcon = () => {
   })
 }
 
-// Component to fit bounds to all markers
 function FitBoundsToMarkers() {
   const map = useMap()
 
@@ -50,13 +48,12 @@ const TrailMap = () => {
   useEffect(() => {
     const fetchTrailStatuses = async () => {
       try {
-        const response = await fetch("/heysteve/trailStatuses.json");
-
+        const response = await fetch(`${process.env.PUBLIC_URL}/trailStatuses.json`)
         if (!response.ok) {
           throw new Error(`Failed to fetch file: ${response.statusText}`)
         }
         const data = await response.json()
-        console.log("Fetched trailStatuses:", data)  // Log the response here
+        console.log("Fetched trailStatuses:", data)
         setTrailStatuses(data)
       } catch (error) {
         console.error("Error fetching trailStatuses.json:", error)
@@ -70,18 +67,14 @@ const TrailMap = () => {
     <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: "500px", width: "100%" }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <FitBoundsToMarkers />
-
       {trails.map((trail) => {
         const defaultIcon = createDefaultIcon()
         const rideability = trailStatuses[trail.name]?.rideability || "Data not available"
-
         return (
           <Marker key={trail.name} position={[trail.lat, trail.lon]} icon={defaultIcon}>
             <Popup>
               <h3>{trail.name}</h3>
-              <p>
-                <strong>Rideability:</strong> {rideability}
-              </p>
+              <p><strong>Rideability:</strong> {rideability}</p>
             </Popup>
           </Marker>
         )
