@@ -3,6 +3,7 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
+// Trail locations
 const trails = [
   { name: "Mt. Tamalpais", lat: 37.9061, lon: -122.5957 },
   { name: "Ford Ord", lat: 36.676, lon: -121.8223 },
@@ -18,23 +19,27 @@ const trails = [
   { name: "Crockett Hills Regional Park", lat: 38.048, lon: -122.2905 },
 ];
 
+// Create a default marker icon
 const createDefaultIcon = () => {
   return new L.Icon({
-    iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
+    iconUrl: `https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png`,
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
 };
 
+// Component to fit bounds
 function FitBoundsToMarkers() {
   const map = useMap();
+
   useEffect(() => {
     if (map) {
       const bounds = L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]));
       map.fitBounds(bounds, { padding: [50, 50] });
     }
   }, [map]);
+
   return null;
 }
 
@@ -50,8 +55,14 @@ const TrailMap = () => {
         `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${process.env.REACT_APP_WEATHER_API_KEY}`
       );
       const weatherData = await weatherResponse.json();
-      const weatherInfo = weatherData.data[0];
 
+      // Check if weather data is available
+      const weatherInfo = weatherData.data && weatherData.data[0];
+      if (!weatherInfo) {
+        throw new Error(`No weather data available for ${name}`);
+      }
+
+      // Prepare weather details for display
       const weatherDetails = `
         Temperature: ${weatherInfo.temp}°C
         Weather: ${weatherInfo.weather.description}
@@ -59,24 +70,21 @@ const TrailMap = () => {
         Wind Speed: ${weatherInfo.wind_spd} m/s
       `;
 
-      // Fetch response from ChatGPT API
-      const chatResponse = await fetch("https://api.openai.com/v1/completions", {
+      // Call ChatGPT API for rideability response
+      const chatResponse = await fetch("/api/chatgpt", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "text-davinci-003",
           prompt: `Based on the current weather (${weatherDetails}), is ${name} rideable today?`,
-          max_tokens: 100,
         }),
       });
 
       const chatData = await chatResponse.json();
-      const rideabilityResponse = chatData.choices[0]?.text.trim() || "No response available.";
+      const rideabilityResponse = chatData.response || "No response available.";
 
-      // Update trail data with weather and ChatGPT response
+      // Update the state with weather and ChatGPT response
       setTrailData((prevData) => ({
         ...prevData,
         [name]: {
@@ -85,7 +93,7 @@ const TrailMap = () => {
         },
       }));
     } catch (error) {
-      console.error(`Error fetching data for ${name}:`, error);
+      console.error(`Error fetching data for ${name}:`, error.message);
     }
   };
 
@@ -110,11 +118,16 @@ const TrailMap = () => {
             <Popup>
               <div>
                 <h3>{trail.name}</h3>
+                <p>Click to check if this trail is rideable today.</p>
                 {trailInfo ? (
                   <>
-                    <p><strong>Weather Info:</strong></p>
+                    <p>
+                      <strong>Weather Info:</strong>
+                    </p>
                     <pre>{trailInfo.weatherDetails}</pre>
-                    <p><strong>Rideability:</strong></p>
+                    <p>
+                      <strong>Rideability:</strong>
+                    </p>
                     <p>{trailInfo.rideabilityResponse}</p>
                   </>
                 ) : (
