@@ -1,0 +1,98 @@
+{
+  "Mt. Tamalpais": {
+    "status": "Rideable",
+    "conditionDetails": "Dry",
+    "temperature": "56°F (14°C)",
+    "weatherConditions": "Partly sunny",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Trails are in good condition with no reported hazards."
+  },
+  "Ford Ord": {
+    "status": "Not Rideable",
+    "conditionDetails": "Wet",
+    "temperature": "56°F (14°C)",
+    "weatherConditions": "Breezy with clouds and breaks of sun; a couple of showers this afternoon",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Heavy rain overnight; trails are muddy and unsafe for riding."
+  },
+  "Rockville Hills Regional Park": {
+    "status": "Rideable",
+    "conditionDetails": "Dry",
+    "temperature": "38°F (4°C)",
+    "weatherConditions": "Mainly cloudy and chilly; breezy this morning, then a couple of showers this afternoon",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Trails are clear with no significant hazards reported."
+  },
+  "China Camp State Park": {
+    "status": "Not Rideable",
+    "conditionDetails": "Mud",
+    "temperature": "61°F (16°C)",
+    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Mud after recent rainfall; trails are slippery and unsafe."
+  },
+  "Joaquin Miller Park": {
+    "status": "Rideable",
+    "conditionDetails": "Dry",
+    "temperature": "57°F (14°C)",
+    "weatherConditions": "Intervals of clouds and sunshine with a brief shower or two",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Trails are in good condition; minor wet spots in shaded areas."
+  },
+  "Pacifica": {
+    "status": "Not Rideable",
+    "conditionDetails": "Wet",
+    "temperature": "57°F (14°C)",
+    "weatherConditions": "Intervals of clouds and sunshine with a brief shower or two",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Recent rain has made trails muddy and unsafe for riding."
+  },
+  "Tamarancho": {
+    "status": "Rideable",
+    "conditionDetails": "Dry",
+    "temperature": "61°F (16°C)",
+    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Trails are clear with no significant hazards reported."
+  },
+  "John Nicolas": {
+    "status": "Not Rideable",
+    "conditionDetails": "Mud",
+    "temperature": "61°F (16°C)",
+    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Mud after recent rainfall; trails are slippery and unsafe."
+  },
+  "Soquel Demonstration Forest": {
+    "status": "Rideable",
+    "conditionDetails": "Dry",
+    "temperature": "61°F (16°C)",
+    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Trails are in good condition with no reported hazards."
+  },
+  "Briones": {
+    "status": "Rideable",
+    "conditionDetails": "Dry",
+    "temperature": "61°F (16°C)",
+    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Trails are clear with no significant hazards reported."
+  },
+  "Lime Ridge": {
+    "status": "Rideable",
+    "conditionDetails": "Dry",
+    "temperature": "61°F (16°C)",
+    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Trails are in good condition with no reported hazards."
+  },
+  "Crockett Hills Regional Park": {
+    "status": "Not Rideable",
+    "conditionDetails": "Mud",
+    "temperature": "61°F (16°C)",
+    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
+    "lastChecked": "2025-02-14T12:00:00Z",
+    "notes": "Mud after recent rainfall; trails are slippery and unsafe."
+  }
+}

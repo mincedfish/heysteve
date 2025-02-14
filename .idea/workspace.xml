@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0c85003c-84af-45ec-8dd4-452018585992" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.github/workflows/fetch-rideability.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/fetch-rideability.yml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fetchRideability.js" beforeDir="false" afterPath="$PROJECT_DIR$/fetchRideability.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/public/trailStatuses.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/trailStatuses.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
