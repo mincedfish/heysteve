@@ -2,9 +2,8 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
-import config from './config'; // Import the config.js file
 
-// Define trail locations
+// Trail locations
 const trails = [
   { name: "Mt. Tamalpais", lat: 37.9061, lon: -122.5957 },
   { name: "Ford Ord", lat: 36.676, lon: -121.8223 },
@@ -45,32 +44,43 @@ function FitBoundsToMarkers() {
 }
 
 const TrailMap = () => {
-  const [weatherData, setWeatherData] = useState(null);
+  const [trailResponses, setTrailResponses] = useState({});
 
-  // Fetch weather information from Weatherbit API
-  const fetchWeather = async (lat, lon) => {
+  // Fetch ChatGPT response
+  const fetchChatGPTResponse = async (trailName) => {
     try {
-      const response = await fetch(
-        `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${config.WEATHER_API_KEY}`
-      );
+      const response = await fetch("https://api.openai.com/v1/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`, // Use environment variable
+        },
+        body: JSON.stringify({
+          model: "text-davinci-003",
+          prompt: `Is ${trailName} rideable today?`,
+          max_tokens: 100,
+        }),
+      });
+
       const data = await response.json();
-      setWeatherData(data.data[0]); // Set weather data for the first location (or modify to handle multiple)
+      const chatResponse = data.choices[0]?.text.trim() || "No response available.";
+      setTrailResponses((prevResponses) => ({
+        ...prevResponses,
+        [trailName]: chatResponse,
+      }));
     } catch (error) {
-      console.error("Error fetching weather data:", error);
+      console.error("Error fetching ChatGPT response:", error);
     }
   };
 
   return (
-    <MapContainer
-      center={[37.9061, -122.5957]}
-      zoom={9}
-      style={{ height: "500px", width: "100%" }}
-    >
+    <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: "500px", width: "100%" }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-      <FitBoundsToMarkers /> {/* This component ensures the map zooms out to fit all markers */}
+      <FitBoundsToMarkers />
 
       {trails.map((trail) => {
         const defaultIcon = createDefaultIcon();
+        const response = trailResponses[trail.name];
 
         return (
           <Marker
@@ -78,22 +88,13 @@ const TrailMap = () => {
             position={[trail.lat, trail.lon]}
             icon={defaultIcon}
             eventHandlers={{
-              click: () => fetchWeather(trail.lat, trail.lon),
+              click: () => fetchChatGPTResponse(trail.name),
             }}
           >
             <Popup>
               <div>
                 <h3>{trail.name}</h3>
-                {weatherData ? (
-                  <>
-                    <p>Temperature: {weatherData.temp}°C</p>
-                    <p>Weather: {weatherData.weather.description}</p>
-                    <p>Humidity: {weatherData.rh}%</p>
-                    <p>Wind Speed: {weatherData.wind_spd} m/s</p>
-                  </>
-                ) : (
-                  <p>Loading weather information...</p>
-                )}
+                {response ? <p>{response}</p> : <p>Click to check if this trail is rideable today.</p>}
               </div>
             </Popup>
           </Marker>
