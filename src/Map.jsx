@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
@@ -36,8 +36,26 @@ const TrailMap = () => {
     });
   };
 
+  // Reference for the map container
+  const mapRef = useRef();
+
+  // Update map zoom level when trails are rendered
+  useEffect(() => {
+    if (mapRef.current) {
+      const bounds = L.latLngBounds(
+        trails.map(trail => [trail.lat, trail.lon])
+      );
+      mapRef.current.fitBounds(bounds); // Adjust map bounds to show all markers
+    }
+  }, [trails]);
+
   return (
-    <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: '500px', width: '100%' }}>
+    <MapContainer
+      center={[37.9061, -122.5957]}
+      zoom={9}
+      style={{ height: '500px', width: '100%' }}
+      ref={mapRef}
+    >
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       {trails.map((trail) => {
