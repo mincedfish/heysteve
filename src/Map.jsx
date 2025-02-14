@@ -5,7 +5,6 @@ import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 
-// Trail locations
 const trails = [
   { name: "Mt. Tamalpais", lat: 37.9061, lon: -122.5957 },
   { name: "Ford Ord", lat: 36.676, lon: -121.8223 },
@@ -31,7 +30,7 @@ const createDefaultIcon = () => {
   })
 }
 
-// Component to fit bounds
+// Component to fit bounds to all markers
 function FitBoundsToMarkers() {
   const map = useMap()
 
@@ -46,52 +45,18 @@ function FitBoundsToMarkers() {
 }
 
 const TrailMap = () => {
-  const [trailData, setTrailData] = useState({})
-  const [loading, setLoading] = useState({})
+  const [trailStatuses, setTrailStatuses] = useState({})
 
-  const fetchChatGPTResponse = async (trail) => {
-    const { name } = trail
-
-    setLoading((prev) => ({ ...prev, [name]: true }))
-
-    try {
-      // Call the backend API route for ChatGPT response
-      const chatResponse = await fetch("/api/chatgpt", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          trailName: name,
-        }),
-      })
-
-      if (!chatResponse.ok) {
-        throw new Error(`HTTP error! status: ${chatResponse.status}`)
-      }
-
-      const chatData = await chatResponse.json()
-      const rideabilityResponse = chatData.response || "No response available."
-
-      // Update the state with ChatGPT response
-      setTrailData((prevData) => ({
-        ...prevData,
-        [name]: {
-          rideabilityResponse,
-        },
-      }))
-    } catch (error) {
-      console.error(`Error fetching data for ${name}:`, error.message)
-      setTrailData((prevData) => ({
-        ...prevData,
-        [name]: {
-          error: error.message,
-        },
-      }))
-    } finally {
-      setLoading((prev) => ({ ...prev, [name]: false }))
+  // Fetch trailStatuses.json from the public folder
+  useEffect(() => {
+    const fetchTrailStatuses = async () => {
+      const response = await fetch("/trailStatuses.json")
+      const data = await response.json()
+      setTrailStatuses(data)
     }
-  }
+
+    fetchTrailStatuses()
+  }, [])
 
   return (
     <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: "500px", width: "100%" }}>
@@ -100,42 +65,15 @@ const TrailMap = () => {
 
       {trails.map((trail) => {
         const defaultIcon = createDefaultIcon()
-        const trailInfo = trailData[trail.name]
-        const isLoading = loading[trail.name]
+        const rideability = trailStatuses[trail.name]?.rideability || "Data not available"
 
         return (
-          <Marker
-            key={trail.name}
-            position={[trail.lat, trail.lon]}
-            icon={defaultIcon}
-            eventHandlers={{
-              click: () => {
-                if (!trailInfo && !isLoading) {
-                  fetchChatGPTResponse(trail)
-                }
-              },
-            }}
-          >
+          <Marker key={trail.name} position={[trail.lat, trail.lon]} icon={defaultIcon}>
             <Popup>
-              <div>
-                <h3>{trail.name}</h3>
-                {isLoading ? (
-                  <p>Loading rideability status...</p>
-                ) : trailInfo ? (
-                  trailInfo.error ? (
-                    <p>Error: {trailInfo.error}</p>
-                  ) : (
-                    <>
-                      <p>
-                        <strong>Rideability:</strong>
-                      </p>
-                      <p>{trailInfo.rideabilityResponse}</p>
-                    </>
-                  )
-                ) : (
-                  <p>Click to check if this trail is rideable today.</p>
-                )}
-              </div>
+              <h3>{trail.name}</h3>
+              <p>
+                <strong>Rideability:</strong> {rideability}
+              </p>
             </Popup>
           </Marker>
         )

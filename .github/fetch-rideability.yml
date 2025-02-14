@@ -1,0 +1,40 @@
+name: Fetch Trail Rideability Data
+
+on:
+  schedule:
+    - cron: '0 3 * * *'  # Runs every day at 03:00 UTC
+  workflow_dispatch:      # Allows manual trigger
+
+jobs:
+  fetch-chatgpt-data:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Fetch ChatGPT Data and Generate trailStatuses.json
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: |
+          set -e
+          node fetchRideability.js || echo "Warning: fetchRideability.js failed."
+
+      - name: Commit and push changes if trailStatuses.json is updated
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@github.com"
+          if [[ `git status --porcelain` ]]; then
+            git add trailStatuses.json
+            git commit -m "Update trail rideability data"
+            git push
+          else
+            echo "No changes to commit."
