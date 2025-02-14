@@ -47,12 +47,19 @@ function FitBoundsToMarkers() {
 const TrailMap = () => {
   const [trailStatuses, setTrailStatuses] = useState({})
 
-  // Fetch trailStatuses.json from the public folder
   useEffect(() => {
     const fetchTrailStatuses = async () => {
-      const response = await fetch("/trailStatuses.json")
-      const data = await response.json()
-      setTrailStatuses(data)
+      try {
+        const response = await fetch("/trailStatuses.json")
+        if (!response.ok) {
+          throw new Error(`Failed to fetch file: ${response.statusText}`)
+        }
+        const data = await response.json()
+        console.log("Fetched trailStatuses:", data)  // Log the response here
+        setTrailStatuses(data)
+      } catch (error) {
+        console.error("Error fetching trailStatuses.json:", error)
+      }
     }
 
     fetchTrailStatuses()
