@@ -22,7 +22,8 @@ const trails = [
 
 const createDefaultIcon = () => {
   return new L.Icon({
-    iconUrl: `https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png`,
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
@@ -33,7 +34,7 @@ function FitBoundsToMarkers() {
   const map = useMap()
 
   useEffect(() => {
-    if (map) {
+    if (map && trails.length > 0) {
       const bounds = L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]))
       map.fitBounds(bounds, { padding: [50, 50] })
     }
@@ -44,24 +45,30 @@ function FitBoundsToMarkers() {
 
 const TrailMap = () => {
   const [trailStatuses, setTrailStatuses] = useState({})
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const fetchTrailStatuses = async () => {
       try {
-        const response = await fetch("/trailStatuses.json") // ✅ Corrected file path
+        const response = await fetch("/trailStatuses.json") // Ensure file exists in `public/`
         if (!response.ok) {
-          throw new Error(`Failed to fetch file: ${response.statusText}`)
+          throw new Error(`HTTP error! status: ${response.status}`)
         }
         const data = await response.json()
         console.log("Fetched trailStatuses:", data)
         setTrailStatuses(data)
       } catch (error) {
         console.error("Error fetching trailStatuses.json:", error)
+        setError(error.message)
       }
     }
 
     fetchTrailStatuses()
   }, [])
+
+  if (error) {
+    return <div style={{ color: "red", padding: "10px" }}>Error loading trail statuses: {error}</div>
+  }
 
   return (
     <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: "500px", width: "100%" }}>
