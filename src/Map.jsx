@@ -1,9 +1,9 @@
-"use client";
+"use client"
 
-import { useEffect, useState } from "react";
-import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
-import L from "leaflet";
-import "leaflet/dist/leaflet.css";
+import { useEffect, useState } from "react"
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
+import L from "leaflet"
+import "leaflet/dist/leaflet.css"
 
 // Trail locations
 const trails = [
@@ -19,7 +19,7 @@ const trails = [
   { name: "Briones", lat: 37.9305, lon: -122.1512 },
   { name: "Lime Ridge", lat: 37.9692, lon: -122.0009 },
   { name: "Crockett Hills Regional Park", lat: 38.048, lon: -122.2905 },
-];
+]
 
 // Create a default marker icon
 const createDefaultIcon = () => {
@@ -28,58 +28,50 @@ const createDefaultIcon = () => {
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
-  });
-};
+  })
+}
 
 // Component to fit bounds
 function FitBoundsToMarkers() {
-  const map = useMap();
+  const map = useMap()
 
   useEffect(() => {
     if (map) {
-      const bounds = L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]));
-      map.fitBounds(bounds, { padding: [50, 50] });
+      const bounds = L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]))
+      map.fitBounds(bounds, { padding: [50, 50] })
     }
-  }, [map]);
+  }, [map])
 
-  return null;
+  return null
 }
 
 const TrailMap = () => {
-  const [trailData, setTrailData] = useState({});
-  const [loading, setLoading] = useState({});
-  const openAIKey = import.meta.env.VITE_OPENAI_API_KEY; // Access OpenAI API key
+  const [trailData, setTrailData] = useState({})
+  const [loading, setLoading] = useState({})
 
   const fetchChatGPTResponse = async (trail) => {
-    const { name, lat, lon } = trail;
+    const { name } = trail
 
-    setLoading((prev) => ({ ...prev, [name]: true }));
+    setLoading((prev) => ({ ...prev, [name]: true }))
 
     try {
-      // Call ChatGPT API for rideability response
-      const chatResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      // Call the backend API route for ChatGPT response
+      const chatResponse = await fetch("/api/chatgpt", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          "Authorization": `Bearer ${openAIKey}`, // Add the Authorization header with your API key
         },
         body: JSON.stringify({
-          model: "gpt-3.5-turbo",
-          messages: [
-            {
-              role: "system",
-              content: "You are a helpful assistant.",
-            },
-            {
-              role: "user",
-              content: `Based on the current weather, is ${name} rideable today?`,
-            },
-          ],
+          trailName: name,
         }),
-      });
+      })
 
-      const chatData = await chatResponse.json();
-      const rideabilityResponse = chatData.choices[0]?.message?.content || "No response available.";
+      if (!chatResponse.ok) {
+        throw new Error(`HTTP error! status: ${chatResponse.status}`)
+      }
+
+      const chatData = await chatResponse.json()
+      const rideabilityResponse = chatData.response || "No response available."
 
       // Update the state with ChatGPT response
       setTrailData((prevData) => ({
@@ -87,19 +79,19 @@ const TrailMap = () => {
         [name]: {
           rideabilityResponse,
         },
-      }));
+      }))
     } catch (error) {
-      console.error(`Error fetching data for ${name}:`, error.message);
+      console.error(`Error fetching data for ${name}:`, error.message)
       setTrailData((prevData) => ({
         ...prevData,
         [name]: {
           error: error.message,
         },
-      }));
+      }))
     } finally {
-      setLoading((prev) => ({ ...prev, [name]: false }));
+      setLoading((prev) => ({ ...prev, [name]: false }))
     }
-  };
+  }
 
   return (
     <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: "500px", width: "100%" }}>
@@ -107,9 +99,9 @@ const TrailMap = () => {
       <FitBoundsToMarkers />
 
       {trails.map((trail) => {
-        const defaultIcon = createDefaultIcon();
-        const trailInfo = trailData[trail.name];
-        const isLoading = loading[trail.name];
+        const defaultIcon = createDefaultIcon()
+        const trailInfo = trailData[trail.name]
+        const isLoading = loading[trail.name]
 
         return (
           <Marker
@@ -119,7 +111,7 @@ const TrailMap = () => {
             eventHandlers={{
               click: () => {
                 if (!trailInfo && !isLoading) {
-                  fetchChatGPTResponse(trail);
+                  fetchChatGPTResponse(trail)
                 }
               },
             }}
@@ -134,7 +126,9 @@ const TrailMap = () => {
                     <p>Error: {trailInfo.error}</p>
                   ) : (
                     <>
-                      <p><strong>Rideability:</strong></p>
+                      <p>
+                        <strong>Rideability:</strong>
+                      </p>
                       <p>{trailInfo.rideabilityResponse}</p>
                     </>
                   )
@@ -144,10 +138,10 @@ const TrailMap = () => {
               </div>
             </Popup>
           </Marker>
-        );
+        )
       })}
     </MapContainer>
-  );
-};
+  )
+}
 
-export default TrailMap;
+export default TrailMap
