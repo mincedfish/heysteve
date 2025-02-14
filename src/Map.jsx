@@ -43,7 +43,7 @@ const TrailMap = () => {
   useEffect(() => {
     if (mapRef.current) {
       const bounds = L.latLngBounds(
-        trails.map(trail => [trail.lat, trail.lon])
+        trails.map((trail) => [trail.lat, trail.lon])
       );
       mapRef.current.fitBounds(bounds); // Adjust map bounds to show all markers
     }
