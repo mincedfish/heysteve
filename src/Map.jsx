@@ -41,10 +41,9 @@ const TrailMap = () => {
         `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${config.WEATHER_API_KEY}`
       );
       const data = await response.json();
-      setWeatherData(data.data[0]); // Set weather data for the clicked trail
+      setWeatherData(data.data[0]); // Set weather data for the first location (or modify to handle multiple)
     } catch (error) {
       console.error('Error fetching weather data:', error);
-      setWeatherData(null);
     }
   };
 
@@ -54,7 +53,7 @@ const TrailMap = () => {
       const bounds = L.latLngBounds(
         trails.map((trail) => [trail.lat, trail.lon])
       );
-      mapRef.current.fitBounds(bounds); // Fit map to bounds of all markers
+      mapRef.current.fitBounds(bounds, { padding: [50, 50] }); // Add padding to give space around the markers
     }
   }, [trails]);
 
@@ -83,13 +82,13 @@ const TrailMap = () => {
               <div>
                 <h3>{trail.name}</h3>
                 {weatherData ? (
-                  <div>
+                  <>
                     <p>Weather at {trail.name}:</p>
                     <p>Temperature: {weatherData.temp}°C</p>
                     <p>Weather: {weatherData.weather.description}</p>
                     <p>Humidity: {weatherData.rh}%</p>
                     <p>Wind Speed: {weatherData.wind_spd} m/s</p>
-                  </div>
+                  </>
                 ) : (
                   <p>Loading weather information...</p>
                 )}
