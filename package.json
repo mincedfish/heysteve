@@ -28,5 +28,6 @@
             "leaflet": "^1.9.4",
             "node-fetch": "^3.3.2",
             "react-leaflet": "^4.2.0"
-      }
+      },
+      "homepage": "https://mincedfish.github.io/heysteve/"
 }

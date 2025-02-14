@@ -24,9 +24,6 @@ const createDefaultIcon = () => {
   return new L.Icon({
     iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
-    popupAnchor: [1, -34],
   })
 }
 
@@ -34,7 +31,7 @@ function FitBoundsToMarkers() {
   const map = useMap()
 
   useEffect(() => {
-    if (map && trails.length > 0) {
+    if (map) {
       const bounds = L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]))
       map.fitBounds(bounds, { padding: [50, 50] })
     }
@@ -49,8 +46,13 @@ const TrailMap = () => {
 
   useEffect(() => {
     const fetchTrailStatuses = async () => {
+      const basePath = process.env.PUBLIC_URL || "/heysteve"
+      const jsonUrl = `${basePath}/trailStatuses.json`
+
+      console.log("Fetching trail statuses from:", jsonUrl) // Debugging line
+
       try {
-        const response = await fetch("/trailStatuses.json") // Ensure file exists in `public/`
+        const response = await fetch(jsonUrl)
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
         }
@@ -67,7 +69,7 @@ const TrailMap = () => {
   }, [])
 
   if (error) {
-    return <div style={{ color: "red", padding: "10px" }}>Error loading trail statuses: {error}</div>
+    return <div>Error loading trail statuses: {error}</div>
   }
 
   return (
