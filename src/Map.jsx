@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -33,19 +33,14 @@ const createDefaultIcon = () => {
 const TrailMap = () => {
   const [weatherData, setWeatherData] = useState(null);
 
-  // Fetch historical weather data for the last 5 days
+  // Fetch current weather data for a specific location
   const fetchWeather = async (lat, lon) => {
     try {
-      const today = new Date();
-      const endDate = today.toISOString().split("T")[0]; // Get current date in YYYY-MM-DD format
-      today.setDate(today.getDate() - 5); // Set the date to 5 days ago
-      const startDate = today.toISOString().split("T")[0]; // Get the start date (5 days ago)
-
       const response = await fetch(
-        `https://api.weatherbit.io/v2.0/history/daily?lat=${lat}&lon=${lon}&start_date=${startDate}&end_date=${endDate}&key=${config.WEATHER_API_KEY}`
+        `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${config.WEATHER_API_KEY}`
       );
       const data = await response.json();
-      setWeatherData(data.data); // Set weather data for the past 5 days
+      setWeatherData(data.data[0]); // Set weather data for the first location (or modify to handle multiple)
     } catch (error) {
       console.error("Error fetching weather data:", error);
     }
@@ -72,16 +67,10 @@ const TrailMap = () => {
                 <h3>{trail.name}</h3>
                 {weatherData ? (
                   <>
-                    <h4>Weather Data for the Last 5 Days:</h4>
-                    {weatherData.map((day, index) => (
-                      <div key={index}>
-                        <p>Date: {day.datetime}</p>
-                        <p>Temperature: {day.temp}°C</p>
-                        <p>Weather: {day.weather.description}</p>
-                        <p>Humidity: {day.rh}%</p>
-                        <p>Wind Speed: {day.wind_spd} m/s</p>
-                      </div>
-                    ))}
+                    <p>Temperature: {weatherData.temp}°C</p>
+                    <p>Weather: {weatherData.weather.description}</p>
+                    <p>Humidity: {weatherData.rh}%</p>
+                    <p>Wind Speed: {weatherData.wind_spd} m/s</p>
                   </>
                 ) : (
                   <p>Loading weather information...</p>
