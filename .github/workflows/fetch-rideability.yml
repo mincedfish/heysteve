@@ -1,5 +1,8 @@
 name: Fetch Trail Rideability Data
 
+permissions:
+  contents: write  # Allow write access to repository contents
+
 on:
   schedule:
     - cron: '0 3 * * *'  # Runs every day at 03:00 UTC
