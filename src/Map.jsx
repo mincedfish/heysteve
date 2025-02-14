@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
@@ -33,7 +33,7 @@ const createDefaultIcon = () => {
 const TrailMap = () => {
   const [weatherData, setWeatherData] = useState(null);
 
-  // Fetch current weather data for a specific location
+  // Fetch weather information from Weatherbit API
   const fetchWeather = async (lat, lon) => {
     try {
       const response = await fetch(
@@ -46,8 +46,13 @@ const TrailMap = () => {
     }
   };
 
+  // Calculate bounds for all trails
+  const bounds = useMemo(() => {
+    return L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]));
+  }, []);
+
   return (
-    <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: "500px", width: "100%" }}>
+    <MapContainer bounds={bounds} style={{ height: "500px", width: "100%" }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       {trails.map((trail) => {
