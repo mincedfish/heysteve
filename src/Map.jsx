@@ -1,5 +1,3 @@
-"use client";
-
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -48,42 +46,59 @@ function FitBoundsToMarkers() {
 const TrailMap = () => {
   const [trailData, setTrailData] = useState({});
   const [loading, setLoading] = useState({});
+  const [rideabilityResponse, setRideabilityResponse] = useState("");
 
-  const fetchChatGPT = async (trail) => {
-    const { name } = trail;
+  const openAIKey = import.meta.env.VITE_OPENAI_API_KEY; // Access OpenAI key from .env
 
-    setLoading((prev) => ({ ...prev, [name]: true }));
+  const fetchChatGPTResponse = async (trailName, weatherDetails) => {
+    const prompt = `Based on the current weather (${weatherDetails}), is ${trailName} rideable today?`;
 
     try {
-      // Call OpenAI API for rideability response
-      const chatResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+      const response = await fetch("https://api.openai.com/v1/chat/completions", {
         method: "POST",
         headers: {
+          "Authorization": `Bearer ${openAIKey}`,
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.OPENAI_API_KEY}`, // Use your OpenAI API key
         },
         body: JSON.stringify({
-          model: "gpt-4", // or "gpt-3.5-turbo"
+          model: "gpt-3.5-turbo",
           messages: [
-            {
-              role: "system",
-              content: "You are a helpful assistant.",
-            },
-            {
-              role: "user",
-              content: `Is ${name} rideable today based on current conditions?`,
-            },
+            { role: "system", content: "You are a helpful assistant." },
+            { role: "user", content: prompt },
           ],
         }),
       });
 
-      const chatData = await chatResponse.json();
-      const rideabilityResponse = chatData.choices[0].message.content || "No response available.";
+      if (response.ok) {
+        const data = await response.json();
+        setRideabilityResponse(data.choices[0].message.content);
+      } else {
+        console.error("Error:", response.statusText);
+        setRideabilityResponse("Error fetching rideability status");
+      }
+    } catch (error) {
+      console.error("Error:", error);
+      setRideabilityResponse("Error fetching rideability status");
+    }
+  };
 
-      // Update the state with ChatGPT response
+  const fetchWeatherAndChatGPT = async (trail) => {
+    const { name, lat, lon } = trail;
+
+    setLoading((prev) => ({ ...prev, [name]: true }));
+
+    try {
+      // Example weather data (can replace with actual API response)
+      const weatherDetails = `Temperature: 22°C, Clear Sky`; // Update as needed
+
+      // Fetch ChatGPT response for rideability
+      await fetchChatGPTResponse(name, weatherDetails);
+
+      // Update the state with weather and ChatGPT response
       setTrailData((prevData) => ({
         ...prevData,
         [name]: {
+          weatherDetails,
           rideabilityResponse,
         },
       }));
@@ -118,7 +133,7 @@ const TrailMap = () => {
             eventHandlers={{
               click: () => {
                 if (!trailInfo && !isLoading) {
-                  fetchChatGPT(trail);
+                  fetchWeatherAndChatGPT(trail);
                 }
               },
             }}
@@ -127,16 +142,20 @@ const TrailMap = () => {
               <div>
                 <h3>{trail.name}</h3>
                 {isLoading ? (
-                  <p>Loading rideability status...</p>
+                  <p>Loading weather and rideability status...</p>
                 ) : trailInfo ? (
                   trailInfo.error ? (
                     <p>Error: {trailInfo.error}</p>
                   ) : (
                     <>
                       <p>
+                        <strong>Weather Info:</strong>
+                      </p>
+                      <pre>{trailInfo.weatherDetails}</pre>
+                      <p>
                         <strong>Rideability:</strong>
                       </p>
-                      <p>{trailInfo.rideabilityResponse}</p>
+                      <p>{rideabilityResponse}</p>
                     </>
                   )
                 ) : (
