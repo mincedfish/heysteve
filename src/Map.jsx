@@ -44,32 +44,54 @@ function FitBoundsToMarkers() {
 }
 
 const TrailMap = () => {
-  const [trailResponses, setTrailResponses] = useState({});
+  const [trailData, setTrailData] = useState({});
 
-  // Fetch ChatGPT response
-  const fetchChatGPTResponse = async (trailName) => {
+  const fetchWeatherAndChatGPT = async (trail) => {
+    const { name, lat, lon } = trail;
+
     try {
-      const response = await fetch("https://api.openai.com/v1/completions", {
+      // Fetch weather data from Weatherbit
+      const weatherResponse = await fetch(
+        `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${process.env.REACT_APP_WEATHER_API_KEY}`
+      );
+      const weatherData = await weatherResponse.json();
+      const weatherInfo = weatherData.data[0];
+
+      // Prepare weather details for display
+      const weatherDetails = `
+        Temperature: ${weatherInfo.temp}°C
+        Weather: ${weatherInfo.weather.description}
+        Humidity: ${weatherInfo.rh}%
+        Wind Speed: ${weatherInfo.wind_spd} m/s
+      `;
+
+      // Call ChatGPT API for rideability response
+      const chatResponse = await fetch("https://api.openai.com/v1/completions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`, // Use environment variable
+          Authorization: `Bearer ${process.env.REACT_APP_OPENAI_API_KEY}`,
         },
         body: JSON.stringify({
           model: "text-davinci-003",
-          prompt: `Is ${trailName} rideable today?`,
+          prompt: `Based on the current weather (${weatherDetails}), is ${name} rideable today?`,
           max_tokens: 100,
         }),
       });
 
-      const data = await response.json();
-      const chatResponse = data.choices[0]?.text.trim() || "No response available.";
-      setTrailResponses((prevResponses) => ({
-        ...prevResponses,
-        [trailName]: chatResponse,
+      const chatData = await chatResponse.json();
+      const rideabilityResponse = chatData.choices[0]?.text.trim() || "No response available.";
+
+      // Update the state with weather and ChatGPT response
+      setTrailData((prevData) => ({
+        ...prevData,
+        [name]: {
+          weatherDetails,
+          rideabilityResponse,
+        },
       }));
     } catch (error) {
-      console.error("Error fetching ChatGPT response:", error);
+      console.error(`Error fetching data for ${name}:`, error);
     }
   };
 
@@ -80,7 +102,7 @@ const TrailMap = () => {
 
       {trails.map((trail) => {
         const defaultIcon = createDefaultIcon();
-        const response = trailResponses[trail.name];
+        const trailInfo = trailData[trail.name];
 
         return (
           <Marker
@@ -88,13 +110,22 @@ const TrailMap = () => {
             position={[trail.lat, trail.lon]}
             icon={defaultIcon}
             eventHandlers={{
-              click: () => fetchChatGPTResponse(trail.name),
+              click: () => fetchWeatherAndChatGPT(trail),
             }}
           >
             <Popup>
               <div>
                 <h3>{trail.name}</h3>
-                {response ? <p>{response}</p> : <p>Click to check if this trail is rideable today.</p>}
+                {trailInfo ? (
+                  <>
+                    <p><strong>Weather Info:</strong></p>
+                    <p>{trailInfo.weatherDetails}</p>
+                    <p><strong>Rideability:</strong></p>
+                    <p>{trailInfo.rideabilityResponse}</p>
+                  </>
+                ) : (
+                  <p>Click to check weather and rideability status.</p>
+                )}
               </div>
             </Popup>
           </Marker>
