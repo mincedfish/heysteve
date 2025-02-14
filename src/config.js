@@ -1,5 +1,7 @@
 // src/config.js
 
-const WEATHER_API_KEY = "34dab66b3e144e13bf1cee338d8a56e3";
+const config = {
+  WEATHER_API_KEY: '34dab66b3e144e13bf1cee338d8a56e3' // Replace with your actual API key
+};
 
-export default WEATHER_API_KEY;
+export default config;

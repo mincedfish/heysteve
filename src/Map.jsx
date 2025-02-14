@@ -1,7 +1,8 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css';
+import config from './config'; // Import the config.js file
 
 const TrailMap = () => {
   // Define trail locations
@@ -20,6 +21,9 @@ const TrailMap = () => {
     { name: 'Crockett Hills Regional Park', lat: 38.0480, lon: -122.2905 }
   ];
 
+  const [weatherData, setWeatherData] = useState(null);
+  const mapRef = useRef();
+
   // Create a default marker icon
   const createDefaultIcon = () => {
     return new L.Icon({
@@ -30,16 +34,26 @@ const TrailMap = () => {
     });
   };
 
-  // Reference for the map container
-  const mapRef = useRef();
+  // Fetch weather information from Weatherbit API
+  const fetchWeather = async (lat, lon) => {
+    try {
+      const response = await fetch(
+        `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${config.WEATHER_API_KEY}`
+      );
+      const data = await response.json();
+      setWeatherData(data.data[0]); // Set weather data for the first location (or modify to handle multiple)
+    } catch (error) {
+      console.error('Error fetching weather data:', error);
+    }
+  };
 
-  // Update map zoom level when trails are rendered
+  // Fit the map to show all markers
   useEffect(() => {
     if (mapRef.current) {
       const bounds = L.latLngBounds(
         trails.map((trail) => [trail.lat, trail.lon])
       );
-      mapRef.current.fitBounds(bounds); // Adjust map bounds to show all markers
+      mapRef.current.fitBounds(bounds);
     }
   }, [trails]);
 
@@ -53,13 +67,31 @@ const TrailMap = () => {
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
 
       {trails.map((trail) => {
-        const defaultIcon = createDefaultIcon(); // Create the default icon for the marker
+        const defaultIcon = createDefaultIcon();
 
         return (
-          <Marker key={trail.name} position={[trail.lat, trail.lon]} icon={defaultIcon}>
+          <Marker
+            key={trail.name}
+            position={[trail.lat, trail.lon]}
+            icon={defaultIcon}
+            eventHandlers={{
+              click: () => fetchWeather(trail.lat, trail.lon)
+            }}
+          >
             <Popup>
               <div>
                 <h3>{trail.name}</h3>
+                {weatherData ? (
+                  <>
+                    <p>Weather at {trail.name}:</p>
+                    <p>Temperature: {weatherData.temp}°C</p>
+                    <p>Weather: {weatherData.weather.description}</p>
+                    <p>Humidity: {weatherData.rh}%</p>
+                    <p>Wind Speed: {weatherData.wind_spd} m/s</p>
+                  </>
+                ) : (
+                  <p>Loading weather information...</p>
+                )}
               </div>
             </Popup>
           </Marker>
