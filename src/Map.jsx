@@ -1,3 +1,5 @@
+"use client";
+
 import { useEffect, useState } from "react";
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
 import L from "leaflet";
@@ -45,15 +47,16 @@ function FitBoundsToMarkers() {
 
 const TrailMap = () => {
   const [trailData, setTrailData] = useState({});
+  const [loading, setLoading] = useState({});
 
   const fetchWeatherAndChatGPT = async (trail) => {
     const { name, lat, lon } = trail;
 
+    setLoading((prev) => ({ ...prev, [name]: true }));
+
     try {
       // Fetch weather data from Weatherbit
-      const weatherResponse = await fetch(
-        `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&key=${process.env.REACT_APP_WEATHER_API_KEY}`
-      );
+      const weatherResponse = await fetch(`/api/weather?lat=${lat}&lon=${lon}`);
       const weatherData = await weatherResponse.json();
 
       // Check if weather data is available
@@ -94,6 +97,14 @@ const TrailMap = () => {
       }));
     } catch (error) {
       console.error(`Error fetching data for ${name}:`, error.message);
+      setTrailData((prevData) => ({
+        ...prevData,
+        [name]: {
+          error: error.message,
+        },
+      }));
+    } finally {
+      setLoading((prev) => ({ ...prev, [name]: false }));
     }
   };
 
@@ -105,6 +116,7 @@ const TrailMap = () => {
       {trails.map((trail) => {
         const defaultIcon = createDefaultIcon();
         const trailInfo = trailData[trail.name];
+        const isLoading = loading[trail.name];
 
         return (
           <Marker
@@ -112,26 +124,35 @@ const TrailMap = () => {
             position={[trail.lat, trail.lon]}
             icon={defaultIcon}
             eventHandlers={{
-              click: () => fetchWeatherAndChatGPT(trail),
+              click: () => {
+                if (!trailInfo && !isLoading) {
+                  fetchWeatherAndChatGPT(trail);
+                }
+              },
             }}
           >
             <Popup>
               <div>
                 <h3>{trail.name}</h3>
-                <p>Click to check if this trail is rideable today.</p>
-                {trailInfo ? (
-                  <>
-                    <p>
-                      <strong>Weather Info:</strong>
-                    </p>
-                    <pre>{trailInfo.weatherDetails}</pre>
-                    <p>
-                      <strong>Rideability:</strong>
-                    </p>
-                    <p>{trailInfo.rideabilityResponse}</p>
-                  </>
-                ) : (
+                {isLoading ? (
                   <p>Loading weather and rideability status...</p>
+                ) : trailInfo ? (
+                  trailInfo.error ? (
+                    <p>Error: {trailInfo.error}</p>
+                  ) : (
+                    <>
+                      <p>
+                        <strong>Weather Info:</strong>
+                      </p>
+                      <pre>{trailInfo.weatherDetails}</pre>
+                      <p>
+                        <strong>Rideability:</strong>
+                      </p>
+                      <p>{trailInfo.rideabilityResponse}</p>
+                    </>
+                  )
+                ) : (
+                  <p>Click to check if this trail is rideable today.</p>
                 )}
               </div>
             </Popup>
