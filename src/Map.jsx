@@ -1,9 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import { MapContainer, TileLayer, Marker, Popup, useMap } from 'react-leaflet';
-import L from 'leaflet';
-import 'leaflet/dist/leaflet.css';
+import { useEffect, useState } from "react";
+import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet";
+import L from "leaflet";
+import "leaflet/dist/leaflet.css";
 
-// Trail locations
 const trails = [
   { name: "Mt. Tamalpais", lat: 37.9061, lon: -122.5957 },
   { name: "Ford Ord", lat: 36.676, lon: -121.8223 },
@@ -19,27 +18,23 @@ const trails = [
   { name: "Crockett Hills Regional Park", lat: 38.048, lon: -122.2905 },
 ];
 
-// Create a default marker icon
 const createDefaultIcon = () => {
   return new L.Icon({
-    iconUrl: `https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png`,
+    iconUrl: "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png",
     iconSize: [25, 41],
     iconAnchor: [12, 41],
     popupAnchor: [1, -34],
   });
 };
 
-// Component to fit bounds
 function FitBoundsToMarkers() {
   const map = useMap();
-
   useEffect(() => {
     if (map) {
       const bounds = L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]));
       map.fitBounds(bounds, { padding: [50, 50] });
     }
   }, [map]);
-
   return null;
 }
 
@@ -57,7 +52,6 @@ const TrailMap = () => {
       const weatherData = await weatherResponse.json();
       const weatherInfo = weatherData.data[0];
 
-      // Prepare weather details for display
       const weatherDetails = `
         Temperature: ${weatherInfo.temp}°C
         Weather: ${weatherInfo.weather.description}
@@ -65,7 +59,7 @@ const TrailMap = () => {
         Wind Speed: ${weatherInfo.wind_spd} m/s
       `;
 
-      // Call ChatGPT API for rideability response
+      // Fetch response from ChatGPT API
       const chatResponse = await fetch("https://api.openai.com/v1/completions", {
         method: "POST",
         headers: {
@@ -82,7 +76,7 @@ const TrailMap = () => {
       const chatData = await chatResponse.json();
       const rideabilityResponse = chatData.choices[0]?.text.trim() || "No response available.";
 
-      // Update the state with weather and ChatGPT response
+      // Update trail data with weather and ChatGPT response
       setTrailData((prevData) => ({
         ...prevData,
         [name]: {
@@ -119,12 +113,12 @@ const TrailMap = () => {
                 {trailInfo ? (
                   <>
                     <p><strong>Weather Info:</strong></p>
-                    <p>{trailInfo.weatherDetails}</p>
+                    <pre>{trailInfo.weatherDetails}</pre>
                     <p><strong>Rideability:</strong></p>
                     <p>{trailInfo.rideabilityResponse}</p>
                   </>
                 ) : (
-                  <p>Click to check weather and rideability status.</p>
+                  <p>Loading weather and rideability status...</p>
                 )}
               </div>
             </Popup>
