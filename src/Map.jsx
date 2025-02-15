@@ -35,12 +35,12 @@ const TrailMap = () => {
   useEffect(() => {
     const fetchTrailStatuses = async () => {
       const basePath = process.env.PUBLIC_URL || "/heysteve";
-      const jsonUrl = `${basePath}/trailStatuses.json`;
+      const jsonUrl = `${basePath}/trailStatuses.json?t=${Date.now()}`; // Prevent caching
 
       console.log("Fetching trail statuses from:", jsonUrl);
 
       try {
-        const response = await fetch(jsonUrl);
+        const response = await fetch(jsonUrl, { cache: "no-store" });
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
@@ -120,20 +120,19 @@ const TrailMap = () => {
               <p><strong>Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
               <p><strong>Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
 
-              <h3>Weather History</h3>
-              <p><strong>For:</strong> {selectedTrail.data.history?.date || "Unknown Date"}</p>
-              <p><strong>Temperature:</strong> {selectedTrail.data.history?.temperature || "N/A"}</p>
-              <p><strong>Condition:</strong> {selectedTrail.data.history?.condition || "N/A"}</p>
-              <p><strong>Rainfall:</strong> {selectedTrail.data.history?.rainfall || "N/A"}</p>
+              <p><strong>Rainfall in Last 24 Hours:</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
 
               <h3>Weather Forecast</h3>
               {selectedTrail.data.forecast ? (
-                <ul style={{ paddingLeft: "15px" }}>
-                  {selectedTrail.data.forecast.map((day, index) => (
-                    <li key={index} style={{ marginBottom: "5px" }}>
-                      <strong>{day.date}:</strong> {day.condition}, {day.temperature}°F, Rainfall: {day.rainfall} in
-                    </li>
-                  ))}
+                <ul style={{ paddingLeft: "15px", listStyle: "none" }}>
+                  {selectedTrail.data.forecast.map((day, index) => {
+                    const formattedDate = day.date.replace(/\s*\d{4}$/, ""); // Remove the year
+                    return (
+                      <li key={index} style={{ marginBottom: "10px" }}>
+                        <strong>{formattedDate}:</strong> {day.condition}, {day.temperature}°F, Rainfall: {day.rainfall} in
+                      </li>
+                    );
+                  })}
                 </ul>
               ) : (
                 <p>No forecast available.</p>
