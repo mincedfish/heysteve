@@ -1,6 +1,6 @@
-const fetch = require("node-fetch");
-const fs = require("fs");
-const trails = require("./trails"); // ✅ Importing trails.js
+import fetch from "node-fetch";
+import fs from "fs";
+import trails from "./trails.js"; // ✅ Ensure this file uses ESM too
 
 async function fetchWeatherData(lat, lon) {
   const apiKey = process.env.WEATHERAPI;
@@ -43,7 +43,9 @@ async function updateTrailStatuses() {
     trailStatuses[trail.name] = {
       status: rideability.status,
       conditionDetails: rideability.conditionDetails,
-      temperature: `${weatherData?.current?.temp_f}°F (${weatherData?.current?.temp_c}°C)`,
+      temperature: weatherData?.current?.temp_f
+        ? `${weatherData.current.temp_f}°F (${weatherData.current.temp_c}°C)`
+        : "N/A",
       weatherConditions: weatherData?.current?.condition?.text || "Unknown",
       lastChecked: new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" }),
       notes: "Automatically generated based on weather data."
@@ -54,4 +56,5 @@ async function updateTrailStatuses() {
   console.log("✅ trailStatuses.json has been updated!");
 }
 
+// Run the update function
 updateTrailStatuses();
