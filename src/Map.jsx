@@ -128,22 +128,24 @@ const TrailMap = () => {
           {selectedTrail.data ? (
             <>
               <h3>📍 Current Conditions</h3>
-              <p><strong>📅 Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}</p>
-              <p><strong>🌡 Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}°F</p>
-              <p><strong>🌤 Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}</p>
-              <p><strong>💨 Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
-              <p><strong>💧 Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
-              <p><strong>🌧 Rainfall (24h):</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
+              <div style={{ marginBottom: "20px" }}>
+                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>📅 Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}</p>
+                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌡 Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}°F</p>
+                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌤 Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}</p>
+                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>💨 Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
+                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>💧 Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
+                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌧 Rainfall (24h):</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
+              </div>
 
               <h3>🔮 Weather Forecast</h3>
               {selectedTrail.data.forecast ? (
                 <div>
                   {selectedTrail.data.forecast.map((day, index) => (
                     <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
-                      <p><strong>📆 Date:</strong> {new Date(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
-                      <p><strong>🌤 Condition:</strong> {day.condition}</p>
-                      <p><strong>🌡 Temperature:</strong> {day.temperature}°F</p>
-                      <p><strong>🌧 Rainfall:</strong> {day.rainfall} in</p>
+                      <p style={{ display: "flex", justifyContent: "space-between" }}><strong>📆 Date:</strong> {new Date(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
+                      <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌤 Condition:</strong> {day.condition}</p>
+                      <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌡 Temperature:</strong> {day.temperature}°F</p>
+                      <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌧 Rainfall:</strong> {day.rainfall} in</p>
                     </div>
                   ))}
                 </div>
@@ -172,7 +174,7 @@ const TrailMap = () => {
             >
               <Popup>
                 <h3>🚵 {trail.name}</h3>
-                <p><strong>✅ Send it?</strong> {trailStatuses[trail.name]?.rideability || "Unknown"}</p>
+                <p><strong>Send it?</strong> {trailStatuses[trail.name]?.rideability || "Unknown"}</p>
               </Popup>
             </Marker>
           ))}
