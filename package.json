@@ -27,7 +27,7 @@
             "dotenv": "^16.4.7",
             "leaflet": "^1.9.4",
             "node-fetch": "^3.3.2",
-            "react-leaflet": "^4.2.0"
+            "react-leaflet": "^4.2.1"
       },
       "homepage": "https://mincedfish.github.io/heysteve/"
 }

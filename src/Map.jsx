@@ -1,4 +1,6 @@
 import { useState, useEffect } from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
 
 const TRAIL_STATUSES_URL = "https://raw.githubusercontent.com/mincedfish/heysteve/main/public/trailStatuses.json";
 
@@ -6,34 +8,26 @@ const Map = () => {
   const [trailData, setTrailData] = useState({});
   const [selectedTrail, setSelectedTrail] = useState(null);
 
-  // Function to fetch the latest trail data from GitHub
-  const fetchTrailData = async () => {
-    try {
-      console.log("Fetching trail data...");
-      const response = await fetch(`${TRAIL_STATUSES_URL}?t=${new Date().getTime()}`);
-
-      console.log("Response status:", response.status);
-      console.log("Response headers:", response.headers);
-
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-      const text = await response.text();
-      console.log("Raw response:", text); // ✅ Debug raw response
-
-      const data = JSON.parse(text);
-      console.log("Parsed JSON:", data); // ✅ Debug parsed JSON
-
-      setTrailData(data);
-    } catch (err) {
-      console.error("Error fetching trail data:", err);
-    }
-  };
-
+  // Fetch trail data
   useEffect(() => {
-    fetchTrailData(); // Fetch on mount
+    const fetchTrailData = async () => {
+      try {
+        console.log("Fetching trail data...");
+        const response = await fetch(`${TRAIL_STATUSES_URL}?t=${new Date().getTime()}`);
+        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+        const data = await response.json();
+        console.log("Fetched trail data:", data);
+        setTrailData(data);
+      } catch (err) {
+        console.error("Error fetching trail data:", err);
+      }
+    };
+
+    fetchTrailData();
   }, []);
 
-  // Handle when a pin is clicked
+  // Handle pin click
   const handlePinClick = (trailName) => {
     if (trailData[trailName]) {
       setSelectedTrail(trailData[trailName]);
@@ -42,25 +36,34 @@ const Map = () => {
     }
   };
 
-  // Handle closing the sidebar
-  const closeSidebar = () => {
-    setSelectedTrail(null);
-  };
-
   return (
     <div>
-      <h1>Map Loaded</h1> {/* ✅ Debug: If missing, React isn't rendering */}
-      <div id="map">
-        <p>Map should be here...</p>
-        <button onClick={() => handlePinClick("Brushy Peak")}>Brushy Peak</button>
-      </div>
-
-      {/* ✅ Debug: Show raw trailData */}
-      <pre>{JSON.stringify(trailData, null, 2)}</pre>
+      <h1>Map Loaded</h1>
+      <MapContainer center={[37.7749, -122.4194]} zoom={10} style={{ height: "500px", width: "100%" }}>
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+        {Object.keys(trailData).map((trailName) => {
+          const trail = trailData[trailName];
+          return (
+            <Marker
+              key={trailName}
+              position={[trail.lat, trail.lon]}
+              eventHandlers={{ click: () => handlePinClick(trailName) }}
+            >
+              <Popup>
+                <strong>{trail.name}</strong>
+                <br />
+                Status: {trail.status}
+                <br />
+                Condition: {trail.conditionDetails}
+              </Popup>
+            </Marker>
+          );
+        })}
+      </MapContainer>
 
       {selectedTrail && (
         <div className="sidebar">
-          <button className="close-btn" onClick={closeSidebar}>X</button>
+          <button className="close-btn" onClick={() => setSelectedTrail(null)}>X</button>
           <h2>{selectedTrail.name}</h2>
           <p><strong>Status:</strong> {selectedTrail.status}</p>
           <p><strong>Condition:</strong> {selectedTrail.conditionDetails}</p>
