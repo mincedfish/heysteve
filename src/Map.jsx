@@ -32,7 +32,7 @@ const TrailMap = () => {
 
   useEffect(() => {
     const fetchTrailStatuses = async () => {
-      const jsonUrl = "/trailStatuses.json" // Fetch from public folder
+    const jsonUrl = "/heysteve/trailStatuses.json";
 
       console.log("Fetching trail statuses from:", jsonUrl)
 
