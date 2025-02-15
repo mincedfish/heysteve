@@ -34,13 +34,11 @@ function FitBoundsToMarkers() {
 const TrailMap = () => {
   const [trailStatuses, setTrailStatuses] = useState({})
   const [selectedTrail, setSelectedTrail] = useState(null)
-  const [activeMarker, setActiveMarker] = useState(null)  // Track active marker
+  const [activeMarker, setActiveMarker] = useState(null)
   const [error, setError] = useState(null)
-  const [loading, setLoading] = useState(false)
   const [map, setMap] = useState(null)
 
   const fetchTrailStatuses = useCallback(async () => {
-    setLoading(true)
     const basePath = process.env.PUBLIC_URL || "/heysteve"
     const jsonUrl = `${basePath}/trailStatuses.json?t=${Date.now()}`
 
@@ -53,8 +51,6 @@ const TrailMap = () => {
       setTrailStatuses(await response.json())
     } catch (error) {
       setError(error.message)
-    } finally {
-      setLoading(false)
     }
   }, [])
 
@@ -70,18 +66,21 @@ const TrailMap = () => {
     return { status, explanation: explanationParts.join("\n").trim() }
   }
 
-  const handleMarkerClick = (trail, marker) => {
-    setSelectedTrail({ ...trail, data: trailStatuses[trail.name] })
-    setActiveMarker(marker)
-    marker.setIcon(activeIcon)  // Change icon to active marker
-  }
-
   const closeSidebar = () => {
     setSelectedTrail(null)
     if (activeMarker) {
-      activeMarker.setIcon(defaultIcon)  // Revert icon to default
+      activeMarker.setIcon(defaultIcon)
       setActiveMarker(null)
     }
+  }
+
+  const handleMarkerClick = (trail, marker) => {
+    if (activeMarker && activeMarker !== marker) {
+      activeMarker.setIcon(defaultIcon)
+    }
+    marker.setIcon(activeIcon)
+    setActiveMarker(marker)
+    setSelectedTrail({ ...trail, data: trailStatuses[trail.name] })
   }
 
   return (
@@ -120,32 +119,27 @@ const TrailMap = () => {
           </button>
 
           <h2 style={{ color: "#333" }}>🚵 {selectedTrail.name}</h2>
-
-          {loading && <p>Loading trail data...</p>}
-
-          {error && <p style={{ color: "red" }}>Error: {error}</p>}
-
           {selectedTrail.data ? (
             <>
               <h3>📍 Current Conditions</h3>
-              <div style={{ marginBottom: "20px" }}>
-                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>📅 Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}</p>
-                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌡 Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}°F</p>
-                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌤 Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}</p>
-                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>💨 Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
-                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>💧 Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
-                <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌧 Rainfall (24h):</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
-              </div>
+              <p><strong>📅 Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}</p>
+              <p><strong>🌡 Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}°F</p>
+              <p><strong>🌤 Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}</p>
+              <p><strong>💨 Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
+              <p><strong>💧 Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
+              <p><strong>🌧 Rainfall (24h):</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
+
+              <div style={{ marginTop: "30px" }}></div> {/* Space between sections */}
 
               <h3>🔮 Weather Forecast</h3>
               {selectedTrail.data.forecast ? (
                 <div>
                   {selectedTrail.data.forecast.map((day, index) => (
                     <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
-                      <p style={{ display: "flex", justifyContent: "space-between" }}><strong>📆 Date:</strong> {new Date(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
-                      <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌤 Condition:</strong> {day.condition}</p>
-                      <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌡 Temperature:</strong> {day.temperature}°F</p>
-                      <p style={{ display: "flex", justifyContent: "space-between" }}><strong>🌧 Rainfall:</strong> {day.rainfall} in</p>
+                      <p><strong>📆 Date:</strong> {new Date(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
+                      <p><strong>🌤 Condition:</strong> {day.condition}</p>
+                      <p><strong>🌡 Temperature:</strong> {day.temperature}°F</p>
+                      <p><strong>🌧 Rainfall:</strong> {day.rainfall} in</p>
                     </div>
                   ))}
                 </div>
@@ -168,9 +162,7 @@ const TrailMap = () => {
               key={trail.name}
               position={[trail.lat, trail.lon]}
               icon={defaultIcon}
-              eventHandlers={{
-                click: (e) => handleMarkerClick(trail, e.target)  // Change icon to active on click
-              }}
+              eventHandlers={{ click: (e) => handleMarkerClick(trail, e.target) }}
             >
               <Popup>
                 <h3>🚵 {trail.name}</h3>
