@@ -1,15 +1,19 @@
 import { useState, useEffect } from "react";
 
+const TRAIL_STATUSES_URL = "https://raw.githubusercontent.com/mincedfish/heysteve/main/public/trailStatuses.json";
+
 const Map = () => {
   const [trailData, setTrailData] = useState({});
   const [selectedTrail, setSelectedTrail] = useState(null);
 
-  // Function to fetch the latest trail data
+  // Function to fetch the latest trail data from GitHub
   const fetchTrailData = async () => {
     try {
-      const response = await fetch(`/trailStatuses.json?t=${new Date().getTime()}`);
+      const response = await fetch(`${TRAIL_STATUSES_URL}?t=${new Date().getTime()}`);
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
       const data = await response.json();
-      console.log("Fetched trail data:", data); // Debugging
+      console.log("Fetched trail data:", data);
       setTrailData(data);
     } catch (err) {
       console.error("Error fetching trail data:", err);
@@ -49,11 +53,11 @@ const Map = () => {
           <h2>{selectedTrail.name}</h2>
           <p><strong>Status:</strong> {selectedTrail.status}</p>
           <p><strong>Condition:</strong> {selectedTrail.conditionDetails}</p>
-          <p><strong>Temperature:</strong> {selectedTrail.current.temperature}</p>
-          <p><strong>Weather:</strong> {selectedTrail.current.condition}</p>
-          <p><strong>Wind:</strong> {selectedTrail.current.wind}</p>
-          <p><strong>Humidity:</strong> {selectedTrail.current.humidity}</p>
-          <p><strong>Last Checked:</strong> {selectedTrail.current.lastChecked}</p>
+          <p><strong>Temperature:</strong> {selectedTrail.current?.temperature || "N/A"}</p>
+          <p><strong>Weather:</strong> {selectedTrail.current?.condition || "N/A"}</p>
+          <p><strong>Wind:</strong> {selectedTrail.current?.wind || "N/A"}</p>
+          <p><strong>Humidity:</strong> {selectedTrail.current?.humidity || "N/A"}</p>
+          <p><strong>Last Checked:</strong> {selectedTrail.current?.lastChecked || "N/A"}</p>
         </div>
       )}
     </div>
