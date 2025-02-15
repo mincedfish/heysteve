@@ -20,40 +20,78 @@
   },
   "Ford Ord": {
     "current": {
-      "temperature": "59°F (15°C)",
+      "temperature": "60°F (16°C)",
       "condition": "Sunny",
-      "wind": "8 mph (13 kph)",
-      "humidity": "70%",
-      "lastChecked": "02-14-2025 08:00 AM PST"
-    },
-    "history": {
-      "temperature": "58°F (14°C)",
-      "condition": "Partly cloudy",
-      "rainfall": "0.0 in (0.0 mm)"
-    },
-    "forecast": [
-      { "date": "02-15-2025", "temperature": "60°F (16°C)", "condition": "Mostly sunny", "rainfall": "0.0 in (0.0 mm)" },
-      { "date": "02-16-2025", "temperature": "63°F (17°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
-      { "date": "02-17-2025", "temperature": "61°F (16°C)", "condition": "Partly cloudy", "rainfall": "0.1 in (2.5 mm)" }
-    ]
-  },
-  "Rockville Hills Regional Park": {
-    "current": {
-      "temperature": "57°F (14°C)",
-      "condition": "Mostly sunny",
-      "wind": "7 mph (11 kph)",
+      "wind": "12 mph (19 kph)",
       "humidity": "65%",
       "lastChecked": "02-14-2025 08:00 AM PST"
     },
     "history": {
-      "temperature": "55°F (13°C)",
+      "temperature": "58°F (14°C)",
+      "condition": "Clear",
+      "rainfall": "0.0 in (0.0 mm)"
+    },
+    "forecast": [
+      { "date": "02-15-2025", "temperature": "62°F (17°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-16-2025", "temperature": "64°F (18°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-17-2025", "temperature": "61°F (16°C)", "condition": "Partly cloudy", "rainfall": "0.0 in (0.0 mm)" }
+    ]
+  },
+  "Rockville Hills Regional Park": {
+    "current": {
+      "temperature": "59°F (15°C)",
+      "condition": "Mostly sunny",
+      "wind": "7 mph (11 kph)",
+      "humidity": "60%",
+      "lastChecked": "02-14-2025 08:00 AM PST"
+    },
+    "history": {
+      "temperature": "57°F (14°C)",
+      "condition": "Clear",
+      "rainfall": "0.0 in (0.0 mm)"
+    },
+    "forecast": [
+      { "date": "02-15-2025", "temperature": "61°F (16°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-16-2025", "temperature": "63°F (17°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-17-2025", "temperature": "60°F (16°C)", "condition": "Partly cloudy", "rainfall": "0.1 in (2.5 mm)" }
+    ]
+  },
+  "China Camp State Park": {
+    "current": {
+      "temperature": "58°F (14°C)",
       "condition": "Partly cloudy",
+      "wind": "8 mph (13 kph)",
+      "humidity": "63%",
+      "lastChecked": "02-14-2025 08:00 AM PST"
+    },
+    "history": {
+      "temperature": "56°F (13°C)",
+      "condition": "Mostly cloudy",
       "rainfall": "0.1 in (2.5 mm)"
     },
     "forecast": [
-      { "date": "02-15-2025", "temperature": "58°F (14°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-15-2025", "temperature": "59°F (15°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
       { "date": "02-16-2025", "temperature": "61°F (16°C)", "condition": "Mostly sunny", "rainfall": "0.0 in (0.0 mm)" },
-      { "date": "02-17-2025", "temperature": "59°F (15°C)", "condition": "Cloudy", "rainfall": "0.3 in (7.6 mm)" }
+      { "date": "02-17-2025", "temperature": "60°F (16°C)", "condition": "Cloudy", "rainfall": "0.1 in (2.5 mm)" }
+    ]
+  },
+  "Joaquin Miller Park": {
+    "current": {
+      "temperature": "57°F (14°C)",
+      "condition": "Cloudy",
+      "wind": "10 mph (16 kph)",
+      "humidity": "70%",
+      "lastChecked": "02-14-2025 08:00 AM PST"
+    },
+    "history": {
+      "temperature": "55°F (13°C)",
+      "condition": "Overcast",
+      "rainfall": "0.3 in (7.6 mm)"
+    },
+    "forecast": [
+      { "date": "02-15-2025", "temperature": "58°F (14°C)", "condition": "Partly cloudy", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-16-2025", "temperature": "60°F (16°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-17-2025", "temperature": "59°F (15°C)", "condition": "Cloudy", "rainfall": "0.2 in (5.1 mm)" }
     ]
   },
   "Mission Peak": {

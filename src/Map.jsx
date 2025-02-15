@@ -4,12 +4,12 @@ import { useEffect, useState } from "react"
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
-import trails from "../trails"
+import trails from "../trails" // ✅ Works with the default export
 
 const createDefaultIcon = () => {
   return new L.Icon({
     iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
-    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png"
   })
 }
 
@@ -32,7 +32,8 @@ const TrailMap = () => {
 
   useEffect(() => {
     const fetchTrailStatuses = async () => {
-    const jsonUrl = "/heysteve/trailStatuses.json";
+      const basePath = process.env.PUBLIC_URL || "/heysteve"
+      const jsonUrl = `${basePath}/trailStatuses.json`
 
       console.log("Fetching trail statuses from:", jsonUrl)
 
@@ -64,6 +65,7 @@ const TrailMap = () => {
       {trails.map((trail) => {
         const defaultIcon = createDefaultIcon()
         const trailData = trailStatuses[trail.name]
+        const [expanded, setExpanded] = useState(false) // "More" button state
 
         return (
           <Marker key={trail.name} position={[trail.lat, trail.lon]} icon={defaultIcon}>
@@ -71,23 +73,19 @@ const TrailMap = () => {
               <h3>{trail.name}</h3>
               {trailData ? (
                 <>
-                  <p><strong>Temperature:</strong> {trailData.current.temperature}</p>
-                  <p><strong>Condition:</strong> {trailData.current.condition}</p>
-                  <p><strong>Wind:</strong> {trailData.current.wind}</p>
-                  <p><strong>Humidity:</strong> {trailData.current.humidity}</p>
-                  <p><strong>Last Checked:</strong> {trailData.current.lastChecked}</p>
-                  <h4>Past Conditions</h4>
-                  <p><strong>Temperature:</strong> {trailData.history.temperature}</p>
-                  <p><strong>Condition:</strong> {trailData.history.condition}</p>
-                  <p><strong>Rainfall:</strong> {trailData.history.rainfall}</p>
-                  <h4>Forecast</h4>
-                  <ul>
-                    {trailData.forecast.map((day, index) => (
-                      <li key={index}>
-                        <strong>{day.date}:</strong> {day.temperature}, {day.condition}, Rain: {day.rainfall}
-                      </li>
-                    ))}
-                  </ul>
+                  <p><strong>Rideability:</strong> {trailData.status}</p>
+                  {!expanded ? (
+                    <button onClick={() => setExpanded(true)}>More</button>
+                  ) : (
+                    <>
+                      <p><strong>Condition:</strong> {trailData.conditionDetails}</p>
+                      <p><strong>Temperature:</strong> {trailData.temperature}</p>
+                      <p><strong>Weather:</strong> {trailData.weatherConditions}</p>
+                      <p><strong>Last Checked:</strong> {trailData.lastChecked}</p>
+                      <p><strong>Notes:</strong> {trailData.notes}</p>
+                      <button onClick={() => setExpanded(false)}>Less</button>
+                    </>
+                  )}
                 </>
               ) : (
                 <p>Data not available</p>
