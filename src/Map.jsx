@@ -168,14 +168,6 @@ const TrailMap = () => {
                 <strong>Rainfall in Last 24 Hours:</strong> {selectedTrail.data.history?.rainfall || "N/A"} in
               </p>
 
-              <h3>Rideability</h3>
-              <p>
-                <strong>Status:</strong> {getRideabilityInfo(selectedTrail.data).status}
-              </p>
-              <p>
-                <strong>Explanation:</strong> {getRideabilityInfo(selectedTrail.data).explanation}
-              </p>
-
               <h3>Weather Forecast</h3>
               {selectedTrail.data.forecast ? (
                 <ul style={{ paddingLeft: "15px", listStyle: "none" }}>

@@ -29,34 +29,59 @@ jobs:
           python - <<EOF
           import json
           import os
+          import sys
           from openai import OpenAI
+          from openai.error import RateLimitError, APIError
 
           client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
-          def determine_rideability(trail_data):
-              prompt = f"""
-              Determine if the trail is rideable based on the following data:
-              Current conditions: {json.dumps(trail_data['current'])}
-              Historical data: {json.dumps(trail_data['history'])}
-              Forecast: {json.dumps(trail_data['forecast'])}
+          def determine_rideability_ai(trail_data):
+              try:
+                  prompt = f"""
+                  Determine if the trail is rideable based on the following data:
+                  Current conditions: {json.dumps(trail_data['current'])}
+                  Historical data: {json.dumps(trail_data['history'])}
+                  Forecast: {json.dumps(trail_data['forecast'])}
 
-              Respond with one of the following:
-              1. "Rideable"
-              2. "Not Rideable"
-              3. "Caution"
+                  Respond with one of the following:
+                  1. "Rideable"
+                  2. "Not Rideable"
+                  3. "Caution"
 
-              Provide a brief explanation for your decision.
-              """
+                  Provide a brief explanation for your decision.
+                  """
 
-              response = client.chat.completions.create(
-                  model="gpt-3.5-turbo",
-                  messages=[
-                      {"role": "system", "content": "You are an expert trail condition analyzer."},
-                      {"role": "user", "content": prompt}
-                  ]
-              )
+                  response = client.chat.completions.create(
+                      model="gpt-3.5-turbo",
+                      messages=[
+                          {"role": "system", "content": "You are an expert trail condition analyzer."},
+                          {"role": "user", "content": prompt}
+                      ]
+                  )
 
-              return response.choices[0].message.content.strip()
+                  return response.choices[0].message.content.strip()
+              except RateLimitError as e:
+                  print(f"OpenAI API Rate Limit Error: {str(e)}", file=sys.stderr)
+                  return None
+              except APIError as e:
+                  print(f"OpenAI API Error: {str(e)}", file=sys.stderr)
+                  return None
+              except Exception as e:
+                  print(f"Unexpected error when calling OpenAI API: {str(e)}", file=sys.stderr)
+                  return None
+
+          def determine_rideability_fallback(trail_data):
+              current = trail_data['current']
+              history = trail_data['history']
+          
+              if float(history['rainfall']) > 0.5:
+                  return "Not Rideable", "High rainfall in the last 24 hours"
+              elif 'rain' in current['condition'].lower():
+                  return "Not Rideable", "Current conditions indicate rain"
+              elif float(current['humidity']) > 90:
+                  return "Caution", "High humidity may make trails slippery"
+              else:
+                  return "Rideable", "No significant issues detected"
 
           # Read the existing JSON file
           with open('public/trailStatuses.json', 'r') as f:
@@ -64,14 +89,21 @@ jobs:
 
           # Process each trail
           for trail_name, trail_data in trail_statuses.items():
-              rideability_info = determine_rideability(trail_data)
+              ai_rideability = determine_rideability_ai(trail_data)
+              if ai_rideability is None:
+                  status, explanation = determine_rideability_fallback(trail_data)
+                  rideability_info = f"{status}\n{explanation} (Fallback method used)"
+              else:
+                  rideability_info = ai_rideability
+          
               trail_data['rideability'] = rideability_info
+              print(f"Updated rideability for {trail_name}: {rideability_info}")
 
           # Write the updated data back to the JSON file
           with open('public/trailStatuses.json', 'w') as f:
               json.dump(trail_statuses, f, indent=2)
 
-          print("Rideability data updated successfully.")
+          print("Rideability data update completed.")
           EOF
 
       - name: Commit and push changes
