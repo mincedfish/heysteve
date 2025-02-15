@@ -1,11 +1,11 @@
 {
   "Mt. Tamalpais": {
     "current": {
-      "temperature": "39.7°F (4.3°C)",
+      "temperature": "41.2°F (5.1°C)",
       "condition": "Sunny",
-      "wind": "5.1 mph (8.3 kph)",
+      "wind": "4.9 mph (7.9 kph)",
       "humidity": "100%",
-      "lastChecked": "2/15/2025, 7:27:45 AM"
+      "lastChecked": "2/15/2025, 8:38:39 AM"
     },
     "history": {
       "temperature": "51.6°F (10.9°C)",
@@ -35,11 +35,11 @@
   },
   "Ford Ord": {
     "current": {
-      "temperature": "39.9°F (4.4°C)",
+      "temperature": "44.1°F (6.7°C)",
       "condition": "Sunny",
-      "wind": "3.4 mph (5.4 kph)",
-      "humidity": "89%",
-      "lastChecked": "2/15/2025, 7:27:45 AM"
+      "wind": "2.9 mph (4.7 kph)",
+      "humidity": "82%",
+      "lastChecked": "2/15/2025, 8:38:39 AM"
     },
     "history": {
       "temperature": "50.7°F (10.4°C)",
@@ -69,11 +69,11 @@
   },
   "Rockville Hills Regional Park": {
     "current": {
-      "temperature": "39.4°F (4.1°C)",
+      "temperature": "41.7°F (5.4°C)",
       "condition": "Sunny",
-      "wind": "2.7 mph (4.3 kph)",
-      "humidity": "92%",
-      "lastChecked": "2/15/2025, 7:27:46 AM"
+      "wind": "2.9 mph (4.7 kph)",
+      "humidity": "90%",
+      "lastChecked": "2/15/2025, 8:38:40 AM"
     },
     "history": {
       "temperature": "52.1°F (11.2°C)",
@@ -103,11 +103,11 @@
   },
   "China Camp State Park": {
     "current": {
-      "temperature": "39.7°F (4.3°C)",
+      "temperature": "41.2°F (5.1°C)",
       "condition": "Sunny",
-      "wind": "5.1 mph (8.3 kph)",
+      "wind": "4.9 mph (7.9 kph)",
       "humidity": "100%",
-      "lastChecked": "2/15/2025, 7:27:46 AM"
+      "lastChecked": "2/15/2025, 8:38:40 AM"
     },
     "history": {
       "temperature": "51.6°F (10.9°C)",
@@ -137,11 +137,11 @@
   },
   "Joaquin Miller Park": {
     "current": {
-      "temperature": "41°F (5°C)",
+      "temperature": "42.1°F (5.6°C)",
       "condition": "Partly cloudy",
-      "wind": "2.2 mph (3.6 kph)",
+      "wind": "3.4 mph (5.4 kph)",
       "humidity": "96%",
-      "lastChecked": "2/15/2025, 7:27:47 AM"
+      "lastChecked": "2/15/2025, 8:38:41 AM"
     },
     "history": {
       "temperature": "50.5°F (10.3°C)",
@@ -171,11 +171,11 @@
   },
   "Pacifica": {
     "current": {
-      "temperature": "43°F (6.1°C)",
+      "temperature": "46°F (7.8°C)",
       "condition": "Partly cloudy",
-      "wind": "4.5 mph (7.2 kph)",
+      "wind": "5.6 mph (9 kph)",
       "humidity": "100%",
-      "lastChecked": "2/15/2025, 7:27:47 AM"
+      "lastChecked": "2/15/2025, 8:38:42 AM"
     },
     "history": {
       "temperature": "51.1°F (10.6°C)",
@@ -205,11 +205,11 @@
   },
   "Tamarancho": {
     "current": {
-      "temperature": "39.7°F (4.3°C)",
+      "temperature": "41.2°F (5.1°C)",
       "condition": "Sunny",
-      "wind": "5.1 mph (8.3 kph)",
+      "wind": "4.9 mph (7.9 kph)",
       "humidity": "100%",
-      "lastChecked": "2/15/2025, 7:27:48 AM"
+      "lastChecked": "2/15/2025, 8:38:42 AM"
     },
     "history": {
       "temperature": "51.6°F (10.9°C)",
@@ -239,11 +239,11 @@
   },
   "John Nicolas": {
     "current": {
-      "temperature": "39°F (3.9°C)",
-      "condition": "Partly cloudy",
-      "wind": "2.2 mph (3.6 kph)",
-      "humidity": "93%",
-      "lastChecked": "2/15/2025, 7:27:48 AM"
+      "temperature": "42.1°F (5.6°C)",
+      "condition": "Mist",
+      "wind": "2.5 mph (4 kph)",
+      "humidity": "85%",
+      "lastChecked": "2/15/2025, 8:38:43 AM"
     },
     "history": {
       "temperature": "49°F (9.4°C)",
@@ -273,11 +273,11 @@
   },
   "Soquel Demonstration Forest": {
     "current": {
-      "temperature": "38.1°F (3.4°C)",
+      "temperature": "41.5°F (5.3°C)",
       "condition": "Sunny",
-      "wind": "3.6 mph (5.8 kph)",
+      "wind": "4.3 mph (6.8 kph)",
       "humidity": "93%",
-      "lastChecked": "2/15/2025, 7:27:49 AM"
+      "lastChecked": "2/15/2025, 8:38:43 AM"
     },
     "history": {
       "temperature": "50.1°F (10.1°C)",
@@ -307,11 +307,11 @@
   },
   "Briones": {
     "current": {
-      "temperature": "39°F (3.9°C)",
+      "temperature": "41.4°F (5.2°C)",
       "condition": "Sunny",
       "wind": "2.2 mph (3.6 kph)",
-      "humidity": "96%",
-      "lastChecked": "2/15/2025, 7:27:49 AM"
+      "humidity": "93%",
+      "lastChecked": "2/15/2025, 8:38:44 AM"
     },
     "history": {
       "temperature": "49.4°F (9.6°C)",
@@ -341,11 +341,11 @@
   },
   "Lime Ridge": {
     "current": {
-      "temperature": "39°F (3.9°C)",
+      "temperature": "41.4°F (5.2°C)",
       "condition": "Sunny",
       "wind": "2.2 mph (3.6 kph)",
-      "humidity": "96%",
-      "lastChecked": "2/15/2025, 7:27:50 AM"
+      "humidity": "93%",
+      "lastChecked": "2/15/2025, 8:38:45 AM"
     },
     "history": {
       "temperature": "50.4°F (10.2°C)",
@@ -375,11 +375,11 @@
   },
   "Crockett Hills Regional Park": {
     "current": {
-      "temperature": "39°F (3.9°C)",
+      "temperature": "41.4°F (5.2°C)",
       "condition": "Sunny",
-      "wind": "2.2 mph (3.6 kph)",
-      "humidity": "96%",
-      "lastChecked": "2/15/2025, 7:27:50 AM"
+      "wind": "2.7 mph (4.3 kph)",
+      "humidity": "93%",
+      "lastChecked": "2/15/2025, 8:38:45 AM"
     },
     "history": {
       "temperature": "50.6°F (10.3°C)",
@@ -409,11 +409,11 @@
   },
   "Mission Peak": {
     "current": {
-      "temperature": "37.8°F (3.2°C)",
+      "temperature": "39.6°F (4.2°C)",
       "condition": "Sunny",
       "wind": "2.2 mph (3.6 kph)",
       "humidity": "93%",
-      "lastChecked": "2/15/2025, 7:27:51 AM"
+      "lastChecked": "2/15/2025, 8:38:46 AM"
     },
     "history": {
       "temperature": "49°F (9.5°C)",
@@ -443,11 +443,11 @@
   },
   "Brushy Peak": {
     "current": {
-      "temperature": "34°F (1.1°C)",
-      "condition": "Sunny",
+      "temperature": "39°F (3.9°C)",
+      "condition": "Partly cloudy",
       "wind": "2.2 mph (3.6 kph)",
-      "humidity": "96%",
-      "lastChecked": "2/15/2025, 7:27:51 AM"
+      "humidity": "89%",
+      "lastChecked": "2/15/2025, 8:38:46 AM"
     },
     "history": {
       "temperature": "48.2°F (9°C)",
