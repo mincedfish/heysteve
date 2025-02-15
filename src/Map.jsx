@@ -38,27 +38,37 @@ const TrailMap = () => {
   const [error, setError] = useState(null)
   const [map, setMap] = useState(null)
 
-  const fetchTrailStatuses = useCallback(async () => {
-    const basePath = process.env.PUBLIC_URL || "/heysteve"
-    const jsonUrl = `${basePath}/trailStatuses.json?t=${Date.now()}`
+const fetchTrailStatuses = useCallback(async () => {
+  const basePath = process.env.PUBLIC_URL || "/heysteve"
+  const timestamp = new Date().getTime()
+  const jsonUrl = `${basePath}/trailStatuses.json?t=${timestamp}`
 
-    try {
-      const response = await fetch(jsonUrl, {
-        method: "GET",
-        headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" },
-      })
-      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-      setTrailStatuses(await response.json())
-    } catch (error) {
-      setError(error.message)
-    }
-  }, [])
+  try {
+    const response = await fetch(jsonUrl, {
+      method: "GET",
+      headers: {
+        "Cache-Control": "no-cache, no-store, must-revalidate",
+        Pragma: "no-cache",
+        Expires: "0"
+      }
+    })
+    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+    const data = await response.json()
+    setTrailStatuses(data)
+  } catch (error) {
+    setError(error.message)
+  }
+}, [])
 
-  useEffect(() => {
+useEffect(() => {
+  console.log("Fetching trail statuses...")
+  fetchTrailStatuses()
+  const intervalId = setInterval(() => {
+    console.log("Fetching trail statuses...")
     fetchTrailStatuses()
-    const intervalId = setInterval(fetchTrailStatuses, 5 * 60 * 1000)
-    return () => clearInterval(intervalId)
-  }, [fetchTrailStatuses])
+  }, 5 * 60 * 1000) // Fetch every 5 minutes
+  return () => clearInterval(intervalId)
+}, [fetchTrailStatuses])
 
   const getRideabilityInfo = (trailData) => {
     if (!trailData || !trailData.rideability) return { status: "Unknown", explanation: "" }
