@@ -28,10 +28,10 @@ jobs:
         run: |
           python - <<EOF
           import json
-          import openai
           import os
+          from openai import OpenAI
 
-          openai.api_key = os.getenv('OPENAI_API_KEY')
+          client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
           def determine_rideability(trail_data):
               prompt = f"""
@@ -48,7 +48,7 @@ jobs:
               Provide a brief explanation for your decision.
               """
 
-              response = openai.ChatCompletion.create(
+              response = client.chat.completions.create(
                   model="gpt-3.5-turbo",
                   messages=[
                       {"role": "system", "content": "You are an expert trail condition analyzer."},
@@ -56,7 +56,7 @@ jobs:
                   ]
               )
 
-              return response.choices[0].message['content'].strip()
+              return response.choices[0].message.content.strip()
 
           # Read the existing JSON file
           with open('public/trailStatuses.json', 'r') as f:
