@@ -13,6 +13,13 @@ const createDefaultIcon = () => {
   });
 };
 
+const createActiveIcon = () => {
+  return new L.Icon({
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png", // Example: Larger icon for active state
+    shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
+  });
+};
+
 function FitBoundsToMarkers() {
   const map = useMap();
 
@@ -30,6 +37,7 @@ const TrailMap = () => {
   const [trailStatuses, setTrailStatuses] = useState({});
   const [selectedTrail, setSelectedTrail] = useState(null);
   const [activePopup, setActivePopup] = useState(null);
+  const [activeMarker, setActiveMarker] = useState(null);  // Track the currently active marker
   const [error, setError] = useState(null);
 
   useEffect(() => {
@@ -80,6 +88,9 @@ const TrailMap = () => {
     if (activePopup) {
       activePopup.closePopup();
       setActivePopup(null);
+    }
+    if (activeMarker) {
+      activeMarker.setIcon(createDefaultIcon()); // Revert to default icon when sidebar is closed
     }
   };
 
@@ -160,19 +171,29 @@ const TrailMap = () => {
           <FitBoundsToMarkers />
           {trails.map((trail) => {
             const defaultIcon = createDefaultIcon();
+            const activeIcon = createActiveIcon();  // Active icon for selected marker
             const trailData = trailStatuses[trail.name];
             const rideability = determineRideability(trailData);
 
             return (
-              <Marker key={trail.name} position={[trail.lat, trail.lon]} icon={defaultIcon}
-                eventHandlers={{ click: (e) => setActivePopup(e.target) }}
+              <Marker
+                key={trail.name}
+                position={[trail.lat, trail.lon]}
+                icon={activeMarker && activeMarker.options.iconUrl === activeIcon.options.iconUrl ? activeIcon : defaultIcon} // Check if active marker
+                eventHandlers={{
+                  click: (e) => {
+                    setActivePopup(e.target);
+                    setActiveMarker(e.target);  // Set the clicked marker as active
+                    e.target.setIcon(activeIcon); // Change the icon to active when clicked
+                  },
+                }}
               >
                 <Popup>
                   <h3>{trail.name}</h3>
                   <p><strong>Rideability:</strong> {rideability}</p>
                   <button onClick={() => {
                     setSelectedTrail({ name: trail.name, data: trailData });
-                    if (activePopup) activePopup.closePopup();
+                    if (activePopup) activePopup.closePopup(); // Close any open popup when "More" is clicked
                   }}>
                     More
                   </button>
