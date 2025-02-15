@@ -40,10 +40,19 @@ const TrailMap = () => {
       console.log("Fetching trail statuses from:", jsonUrl);
 
       try {
-        const response = await fetch(jsonUrl, { cache: "no-store" });
+        const response = await fetch(jsonUrl, {
+          method: "GET",
+          headers: {
+            "Cache-Control": "no-cache, no-store, must-revalidate",
+            Pragma: "no-cache",
+            Expires: "0",
+          },
+        });
+
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
+
         const data = await response.json();
         console.log("Fetched trailStatuses:", data);
         setTrailStatuses(data);
