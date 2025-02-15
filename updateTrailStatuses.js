@@ -1,11 +1,17 @@
 import fs from "fs";
 import fetch from "node-fetch";
-import trails from "./trails.js";
+import trails from "./trails.js"; // Import trails data
+
+const filePath = "public/trailStatuses.json";
+
+// Ensure the file exists before writing to it
+if (!fs.existsSync(filePath)) {
+  fs.writeFileSync(filePath, JSON.stringify({}, null, 2)); // Create an empty JSON file
+}
 
 const API_KEY = process.env.WEATHERAPI;
 const BASE_URL = "https://api.weatherapi.com/v1";
 
-// Function to fetch weather data
 async function fetchWeatherData(lat, lon) {
   try {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`);
@@ -27,14 +33,12 @@ async function fetchWeatherData(lat, lon) {
   }
 }
 
-// Get yesterday's date for historical data
 function getYesterdayDate() {
   const date = new Date();
   date.setDate(date.getDate() - 1);
   return date.toISOString().split("T")[0];
 }
 
-// Function to determine trail rideability
 function determineRideability(weather) {
   if (!weather) return { status: "Unknown", conditionDetails: "No data available" };
 
@@ -49,7 +53,6 @@ function determineRideability(weather) {
   return { status: "Rideable", conditionDetails: "Dry or Minimal Moisture" };
 }
 
-// Update trail statuses
 async function updateTrailStatuses() {
   const trailStatuses = {};
 
@@ -61,8 +64,6 @@ async function updateTrailStatuses() {
     const rideability = determineRideability(weatherData.current);
 
     trailStatuses[trail.name] = {
-      status: rideability.status,
-      conditionDetails: rideability.conditionDetails,
       current: {
         temperature: `${weatherData.current.current.temp_f}°F (${weatherData.current.current.temp_c}°C)`,
         condition: weatherData.current.current.condition.text,
@@ -71,9 +72,9 @@ async function updateTrailStatuses() {
         lastChecked: new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
       },
       history: {
-        temperature: `${weatherData.history.forecast.forecastday[0]?.day?.avgtemp_f ?? "N/A"}°F (${weatherData.history.forecast.forecastday[0]?.day?.avgtemp_c ?? "N/A"}°C)`,
-        condition: weatherData.history.forecast.forecastday[0]?.day?.condition?.text ?? "N/A",
-        rainfall: `${weatherData.history.forecast.forecastday[0]?.day?.totalprecip_in ?? "N/A"} in (${weatherData.history.forecast.forecastday[0]?.day?.totalprecip_mm ?? "N/A"} mm)`
+        temperature: `${weatherData.history.forecast.forecastday[0].day.avgtemp_f}°F (${weatherData.history.forecast.forecastday[0].day.avgtemp_c}°C)`,
+        condition: weatherData.history.forecast.forecastday[0].day.condition.text,
+        rainfall: `${weatherData.history.forecast.forecastday[0].day.totalprecip_in} in (${weatherData.history.forecast.forecastday[0].day.totalprecip_mm} mm)`
       },
       forecast: weatherData.forecast.forecast.forecastday.map((day) => ({
         date: day.date,
@@ -84,8 +85,7 @@ async function updateTrailStatuses() {
     };
   }
 
-  // Save the data in public/trailStatuses.json
-  fs.writeFileSync("public/trailStatuses.json", JSON.stringify(trailStatuses, null, 2));
+  fs.writeFileSync(filePath, JSON.stringify(trailStatuses, null, 2));
   console.log("✅ trailStatuses.json has been updated!");
 }
 

@@ -30,7 +30,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/trailStatuses.json
-          git commit -m "Auto-update trail statuses" || echo "No changes to commit"
+          git add -f public/trailStatuses.json  # Force add ignored file
+          git commit -m "Auto-update trail statuses"
           git push origin main
-        continue-on-error: true
