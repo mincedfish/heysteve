@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
+import trails from "./trails"; // ✅ Correct relative path
 
 const TRAIL_STATUSES_URL = "https://raw.githubusercontent.com/mincedfish/heysteve/main/public/trailStatuses.json";
 
@@ -8,26 +7,39 @@ const Map = () => {
   const [trailData, setTrailData] = useState({});
   const [selectedTrail, setSelectedTrail] = useState(null);
 
-  // Fetch trail data
+  // Function to fetch trail statuses from GitHub
+  const fetchTrailData = async () => {
+    try {
+      console.log("Fetching trail statuses...");
+      const response = await fetch(`${TRAIL_STATUSES_URL}?t=${new Date().getTime()}`);
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+      const statusData = await response.json();
+      console.log("Fetched trail statuses:", statusData);
+
+      // ✅ Merge static trails with statuses
+      const mergedTrails = trails.map((trail) => ({
+        ...trail,
+        ...(statusData[trail.name] || {}), // Merge matching trail data
+      }));
+
+      // Convert array to object for easy access
+      const trailDataObject = mergedTrails.reduce((acc, trail) => {
+        acc[trail.name] = trail;
+        return acc;
+      }, {});
+
+      setTrailData(trailDataObject);
+    } catch (err) {
+      console.error("Error fetching trail data:", err);
+    }
+  };
+
   useEffect(() => {
-    const fetchTrailData = async () => {
-      try {
-        console.log("Fetching trail data...");
-        const response = await fetch(`${TRAIL_STATUSES_URL}?t=${new Date().getTime()}`);
-        if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-        const data = await response.json();
-        console.log("Fetched trail data:", data);
-        setTrailData(data);
-      } catch (err) {
-        console.error("Error fetching trail data:", err);
-      }
-    };
-
-    fetchTrailData();
+    fetchTrailData(); // Fetch on mount
   }, []);
 
-  // Handle pin click
+  // Handle when a pin is clicked
   const handlePinClick = (trailName) => {
     if (trailData[trailName]) {
       setSelectedTrail(trailData[trailName]);
@@ -36,37 +48,32 @@ const Map = () => {
     }
   };
 
+  // Handle closing the sidebar
+  const closeSidebar = () => {
+    setSelectedTrail(null);
+  };
+
   return (
     <div>
       <h1>Map Loaded</h1>
-      <MapContainer center={[37.7749, -122.4194]} zoom={10} style={{ height: "500px", width: "100%" }}>
-        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
-        {Object.keys(trailData).map((trailName) => {
-          const trail = trailData[trailName];
-          return (
-            <Marker
-              key={trailName}
-              position={[trail.lat, trail.lon]}
-              eventHandlers={{ click: () => handlePinClick(trailName) }}
-            >
-              <Popup>
-                <strong>{trail.name}</strong>
-                <br />
-                Status: {trail.status}
-                <br />
-                Condition: {trail.conditionDetails}
-              </Popup>
-            </Marker>
-          );
-        })}
-      </MapContainer>
+      <div id="map">
+        <p>Map should be here...</p>
+        {trails.map((trail) => (
+          <button key={trail.name} onClick={() => handlePinClick(trail.name)}>
+            {trail.name}
+          </button>
+        ))}
+      </div>
+
+      {/* Debug: Show fetched trailData */}
+      <pre>{JSON.stringify(trailData, null, 2)}</pre>
 
       {selectedTrail && (
         <div className="sidebar">
-          <button className="close-btn" onClick={() => setSelectedTrail(null)}>X</button>
+          <button className="close-btn" onClick={closeSidebar}>X</button>
           <h2>{selectedTrail.name}</h2>
-          <p><strong>Status:</strong> {selectedTrail.status}</p>
-          <p><strong>Condition:</strong> {selectedTrail.conditionDetails}</p>
+          <p><strong>Status:</strong> {selectedTrail.status || "Unknown"}</p>
+          <p><strong>Condition:</strong> {selectedTrail.conditionDetails || "Unknown"}</p>
           <p><strong>Temperature:</strong> {selectedTrail.current?.temperature || "N/A"}</p>
           <p><strong>Weather:</strong> {selectedTrail.current?.condition || "N/A"}</p>
           <p><strong>Wind:</strong> {selectedTrail.current?.wind || "N/A"}</p>
