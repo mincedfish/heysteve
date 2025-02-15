@@ -28,6 +28,11 @@ jobs:
           WEATHERAPI: ${{ secrets.WEATHERAPI }}
         run: node updateTrailStatuses.js
 
+      - name: Move trailStatuses.json to public directory
+        run: |
+          mkdir -p public  # Ensure the public directory exists
+          mv trailStatuses.json public/trailStatuses.json  # Move file to public/
+
       - name: Commit and push changes
         env:
           GITHUB_TOKEN: ${{ secrets.repo }}  # Uses your stored repo token
@@ -35,7 +40,7 @@ jobs:
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
           git remote set-url origin https://x-access-token:${{ secrets.repo }}@github.com/mincedfish/heysteve.git
-          git add trailStatuses.json
+          git add public/trailStatuses.json
           git commit -m "Auto-update trail statuses" || echo "No changes to commit"
           git push origin main
         continue-on-error: true
