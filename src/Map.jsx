@@ -4,7 +4,7 @@ import { useEffect, useState } from "react"
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
-import trails from "../trails" // ✅ Works with the default export
+import trails from "../trails"
 
 const createDefaultIcon = () => {
   return new L.Icon({
@@ -29,24 +29,19 @@ function FitBoundsToMarkers() {
 const TrailMap = () => {
   const [trailStatuses, setTrailStatuses] = useState({})
   const [error, setError] = useState(null)
+  const [expandedTrail, setExpandedTrail] = useState(null) // Track which popup is expanded
 
   useEffect(() => {
     const fetchTrailStatuses = async () => {
       const basePath = process.env.PUBLIC_URL || "/heysteve"
       const jsonUrl = `${basePath}/trailStatuses.json`
 
-      console.log("Fetching trail statuses from:", jsonUrl)
-
       try {
         const response = await fetch(jsonUrl)
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
+        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
         const data = await response.json()
-        console.log("Fetched trailStatuses:", data)
         setTrailStatuses(data)
       } catch (error) {
-        console.error("Error fetching trailStatuses.json:", error)
         setError(error.message)
       }
     }
@@ -62,10 +57,11 @@ const TrailMap = () => {
     <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: "500px", width: "100%" }}>
       <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
       <FitBoundsToMarkers />
+
       {trails.map((trail) => {
         const defaultIcon = createDefaultIcon()
         const trailData = trailStatuses[trail.name]
-        const [expanded, setExpanded] = useState(false) // "More" button state
+        const isExpanded = expandedTrail === trail.name
 
         return (
           <Marker key={trail.name} position={[trail.lat, trail.lon]} icon={defaultIcon}>
@@ -73,17 +69,34 @@ const TrailMap = () => {
               <h3>{trail.name}</h3>
               {trailData ? (
                 <>
-                  <p><strong>Rideability:</strong> {trailData.status}</p>
-                  {!expanded ? (
-                    <button onClick={() => setExpanded(true)}>More</button>
-                  ) : (
+                  <p><strong>Temperature:</strong> {trailData.current?.temperature}</p>
+                  <p><strong>Condition:</strong> {trailData.current?.condition}</p>
+                  <p><strong>Wind:</strong> {trailData.current?.wind}</p>
+                  <p><strong>Humidity:</strong> {trailData.current?.humidity}</p>
+
+                  {!isExpanded && (
+                    <button onClick={(e) => { e.preventDefault(); setExpandedTrail(trail.name); }}>
+                      More
+                    </button>
+                  )}
+
+                  {isExpanded && (
                     <>
-                      <p><strong>Condition:</strong> {trailData.conditionDetails}</p>
-                      <p><strong>Temperature:</strong> {trailData.temperature}</p>
-                      <p><strong>Weather:</strong> {trailData.weatherConditions}</p>
-                      <p><strong>Last Checked:</strong> {trailData.lastChecked}</p>
-                      <p><strong>Notes:</strong> {trailData.notes}</p>
-                      <button onClick={() => setExpanded(false)}>Less</button>
+                      <h4>History</h4>
+                      <p><strong>Temp:</strong> {trailData.history?.temperature}</p>
+                      <p><strong>Condition:</strong> {trailData.history?.condition}</p>
+                      <p><strong>Rainfall:</strong> {trailData.history?.rainfall}</p>
+
+                      <h4>Forecast</h4>
+                      {trailData.forecast.map((day, index) => (
+                        <p key={index}>
+                          <strong>{day.date}:</strong> {day.temperature}, {day.condition}, Rainfall: {day.rainfall}
+                        </p>
+                      ))}
+
+                      <button onClick={(e) => { e.preventDefault(); setExpandedTrail(null); }}>
+                        Less
+                      </button>
                     </>
                   )}
                 </>
