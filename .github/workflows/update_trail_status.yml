@@ -16,17 +16,14 @@ jobs:
           persist-credentials: false
           ref: main
 
-      - name: Copy updateTrailStatuses.js to workspace
-        run: cp updateTrailStatuses.js $GITHUB_WORKSPACE/
-
       - name: Checkout gh-pages branch
         uses: actions/checkout@v4
         with:
           persist-credentials: false
           ref: gh-pages
 
-      - name: Move updateTrailStatuses.js to gh-pages
-        run: mv $GITHUB_WORKSPACE/updateTrailStatuses.js .
+      - name: Copy updateTrailStatuses.js from main
+        run: cp ../updateTrailStatuses.js .
 
       - name: Set up Node.js
         uses: actions/setup-node@v4

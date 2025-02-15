@@ -4,7 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="0c85003c-84af-45ec-8dd4-452018585992" name="Changes" comment="" />
+    <list default="true" id="0c85003c-84af-45ec-8dd4-452018585992" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.github/workflows/update_trail_status.yml" beforeDir="false" afterPath="$PROJECT_DIR$/.github/workflows/update_trail_status.yml" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
