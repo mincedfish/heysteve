@@ -6,20 +6,21 @@ import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 import trails from "../trails";
 
-const createDefaultIcon = () => {
-  return new L.Icon({
+// Default marker icon
+const createDefaultIcon = () =>
+  new L.Icon({
     iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon.png",
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
   });
-};
 
-const createActiveIcon = () => {
-  return new L.Icon({
-    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png", // Example: Larger icon for active state
+// Active marker icon
+const createActiveIcon = () =>
+  new L.Icon({
+    iconUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-icon-2x.png",
     shadowUrl: "https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png",
   });
-};
 
+// Fit map bounds to include all markers
 function FitBoundsToMarkers() {
   const map = useMap();
 
@@ -36,10 +37,10 @@ function FitBoundsToMarkers() {
 const TrailMap = () => {
   const [trailStatuses, setTrailStatuses] = useState({});
   const [selectedTrail, setSelectedTrail] = useState(null);
-  const [activePopup, setActivePopup] = useState(null);
-  const [activeMarker, setActiveMarker] = useState(null);  // Track the currently active marker
+  const [activeMarker, setActiveMarker] = useState(null); // Track active marker
   const [error, setError] = useState(null);
 
+  // Fetch trail statuses with cache prevention
   useEffect(() => {
     const fetchTrailStatuses = async () => {
       const basePath = process.env.PUBLIC_URL || "/heysteve";
@@ -71,26 +72,26 @@ const TrailMap = () => {
     };
 
     fetchTrailStatuses();
+    const intervalId = setInterval(fetchTrailStatuses, 5 * 60 * 1000); // Refresh every 5 minutes
+
+    return () => clearInterval(intervalId);
   }, []);
 
+  // Determine rideability based on weather data
   const determineRideability = (trailData) => {
     if (!trailData || !trailData.current) return "Unknown";
-
     const { rainfall, condition } = trailData.current;
-
     if (rainfall > 0.1) return "Not Rideable (Recent Rain)";
     if (condition && condition.toLowerCase().includes("muddy")) return "Not Rideable (Muddy)";
     return "Rideable";
   };
 
+  // Close sidebar and reset marker
   const closeSidebar = () => {
     setSelectedTrail(null);
-    if (activePopup) {
-      activePopup.closePopup();
-      setActivePopup(null);
-    }
     if (activeMarker) {
-      activeMarker.setIcon(createDefaultIcon()); // Revert to default icon when sidebar is closed
+      activeMarker.setIcon(createDefaultIcon()); // Reset icon
+      setActiveMarker(null);
     }
   };
 
@@ -134,22 +135,22 @@ const TrailMap = () => {
           <h2>{selectedTrail.name}</h2>
           {selectedTrail.data ? (
             <>
-              <p><strong>Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}</p>
-              <p><strong>Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}</p>
-              <p><strong>Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}</p>
-              <p><strong>Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
-              <p><strong>Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
-
-              <p><strong>Rainfall in Last 24 Hours:</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
+              <p>
+                <strong>Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}
+              </p>
+              <p>
+                <strong>Rainfall in Last 24 Hours:</strong> {selectedTrail.data.history?.rainfall || "N/A"} in
+              </p>
 
               <h3>Weather Forecast</h3>
               {selectedTrail.data.forecast ? (
                 <ul style={{ paddingLeft: "15px", listStyle: "none" }}>
                   {selectedTrail.data.forecast.map((day, index) => {
-                    const formattedDate = day.date.replace(/\s*\d{4}$/, ""); // Remove the year
+                    const formattedDate = day.date.replace(/\s*\d{4}$/, "");
                     return (
                       <li key={index} style={{ marginBottom: "10px" }}>
-                        <strong>{formattedDate}:</strong> {day.condition}, {day.temperature}°F, Rainfall: {day.rainfall} in
+                        <strong>{formattedDate}:</strong> {day.condition}, {day.temperature}°F, Rainfall: {day.rainfall}{" "}
+                        in
                       </li>
                     );
                   })}
@@ -161,7 +162,9 @@ const TrailMap = () => {
           ) : (
             <p>Data not available</p>
           )}
-          <button onClick={closeSidebar} style={{ marginTop: "10px" }}>Close</button>
+          <button onClick={closeSidebar} style={{ marginTop: "10px" }}>
+            Close
+          </button>
         </div>
       )}
 
@@ -171,7 +174,7 @@ const TrailMap = () => {
           <FitBoundsToMarkers />
           {trails.map((trail) => {
             const defaultIcon = createDefaultIcon();
-            const activeIcon = createActiveIcon();  // Active icon for selected marker
+            const activeIcon = createActiveIcon();
             const trailData = trailStatuses[trail.name];
             const rideability = determineRideability(trailData);
 
@@ -179,22 +182,26 @@ const TrailMap = () => {
               <Marker
                 key={trail.name}
                 position={[trail.lat, trail.lon]}
-                icon={activeMarker && activeMarker.options.iconUrl === activeIcon.options.iconUrl ? activeIcon : defaultIcon} // Check if active marker
+                icon={activeMarker === trail.name ? activeIcon : defaultIcon}
                 eventHandlers={{
                   click: (e) => {
-                    setActivePopup(e.target);
-                    setActiveMarker(e.target);  // Set the clicked marker as active
-                    e.target.setIcon(activeIcon); // Change the icon to active when clicked
+                    if (activeMarker) activeMarker.setIcon(createDefaultIcon()); // Reset previous marker
+                    e.target.setIcon(activeIcon); // Activate new marker
+                    setActiveMarker(e.target);
+                    setSelectedTrail({ name: trail.name, data: trailData });
                   },
                 }}
               >
                 <Popup>
                   <h3>{trail.name}</h3>
-                  <p><strong>Rideability:</strong> {rideability}</p>
-                  <button onClick={() => {
-                    setSelectedTrail({ name: trail.name, data: trailData });
-                    if (activePopup) activePopup.closePopup(); // Close any open popup when "More" is clicked
-                  }}>
+                  <p>
+                    <strong>Rideability:</strong> {rideability}
+                  </p>
+                  <button
+                    onClick={() => {
+                      setSelectedTrail({ name: trail.name, data: trailData });
+                    }}
+                  >
                     More
                   </button>
                 </Popup>
