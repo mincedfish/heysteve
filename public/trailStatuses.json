@@ -1,11 +1,11 @@
 {
   "Mt. Tamalpais": {
     "current": {
-      "temperature": "39.4°F (4.1°C)",
+      "temperature": "39.2°F (4°C)",
       "condition": "Clear",
-      "wind": "4.9 mph (7.9 kph)",
+      "wind": "4 mph (6.5 kph)",
       "humidity": "100%",
-      "lastChecked": "2/15/2025, 2:33:26 AM"
+      "lastChecked": "2/15/2025, 3:20:19 AM"
     },
     "history": {
       "temperature": "51.6°F (10.9°C)",
@@ -15,19 +15,19 @@
     "forecast": [
       {
         "date": "2025-02-15",
-        "temperature": "46.7°F (8.1°C)",
+        "temperature": "45.8°F (7.7°C)",
         "condition": "Mist",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-16",
-        "temperature": "48.5°F (9.2°C)",
+        "temperature": "47.9°F (8.8°C)",
         "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-17",
-        "temperature": "49.8°F (9.9°C)",
+        "temperature": "50.1°F (10.1°C)",
         "condition": "Mist",
         "rainfall": "0 in (0 mm)"
       }
@@ -35,11 +35,11 @@
   },
   "Ford Ord": {
     "current": {
-      "temperature": "43°F (6.1°C)",
+      "temperature": "42.1°F (5.6°C)",
       "condition": "Clear",
-      "wind": "4 mph (6.5 kph)",
-      "humidity": "86%",
-      "lastChecked": "2/15/2025, 2:33:27 AM"
+      "wind": "3.8 mph (6.1 kph)",
+      "humidity": "85%",
+      "lastChecked": "2/15/2025, 3:20:20 AM"
     },
     "history": {
       "temperature": "50.7°F (10.4°C)",
@@ -49,31 +49,31 @@
     "forecast": [
       {
         "date": "2025-02-15",
-        "temperature": "48°F (8.9°C)",
-        "condition": "Fog",
+        "temperature": "47.3°F (8.5°C)",
+        "condition": "Overcast ",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-16",
-        "temperature": "49.9°F (9.9°C)",
+        "temperature": "50.5°F (10.3°C)",
         "condition": "Overcast ",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-17",
-        "temperature": "49.9°F (10°C)",
-        "condition": "Mist",
+        "temperature": "50.2°F (10.1°C)",
+        "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       }
     ]
   },
   "Rockville Hills Regional Park": {
     "current": {
-      "temperature": "41.7°F (5.4°C)",
+      "temperature": "38.8°F (3.8°C)",
       "condition": "Clear",
-      "wind": "4.3 mph (6.8 kph)",
-      "humidity": "86%",
-      "lastChecked": "2/15/2025, 2:33:27 AM"
+      "wind": "3.4 mph (5.4 kph)",
+      "humidity": "92%",
+      "lastChecked": "2/15/2025, 3:20:20 AM"
     },
     "history": {
       "temperature": "52.1°F (11.2°C)",
@@ -103,11 +103,11 @@
   },
   "China Camp State Park": {
     "current": {
-      "temperature": "39.4°F (4.1°C)",
+      "temperature": "39.2°F (4°C)",
       "condition": "Clear",
-      "wind": "4.9 mph (7.9 kph)",
+      "wind": "4 mph (6.5 kph)",
       "humidity": "100%",
-      "lastChecked": "2/15/2025, 2:33:28 AM"
+      "lastChecked": "2/15/2025, 3:20:21 AM"
     },
     "history": {
       "temperature": "51.6°F (10.9°C)",
@@ -117,19 +117,19 @@
     "forecast": [
       {
         "date": "2025-02-15",
-        "temperature": "46.7°F (8.1°C)",
+        "temperature": "45.8°F (7.7°C)",
         "condition": "Mist",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-16",
-        "temperature": "48.5°F (9.2°C)",
+        "temperature": "47.9°F (8.8°C)",
         "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-17",
-        "temperature": "49.8°F (9.9°C)",
+        "temperature": "50.1°F (10.1°C)",
         "condition": "Mist",
         "rainfall": "0 in (0 mm)"
       }
@@ -137,11 +137,11 @@
   },
   "Joaquin Miller Park": {
     "current": {
-      "temperature": "41.4°F (5.2°C)",
+      "temperature": "42.1°F (5.6°C)",
       "condition": "Clear",
-      "wind": "2.5 mph (4 kph)",
-      "humidity": "96%",
-      "lastChecked": "2/15/2025, 2:33:28 AM"
+      "wind": "2.2 mph (3.6 kph)",
+      "humidity": "92%",
+      "lastChecked": "2/15/2025, 3:20:21 AM"
     },
     "history": {
       "temperature": "50.5°F (10.3°C)",
@@ -171,11 +171,11 @@
   },
   "Pacifica": {
     "current": {
-      "temperature": "44.1°F (6.7°C)",
-      "condition": "Clear",
-      "wind": "3.6 mph (5.8 kph)",
+      "temperature": "43°F (6.1°C)",
+      "condition": "Partly cloudy",
+      "wind": "3.4 mph (5.4 kph)",
       "humidity": "100%",
-      "lastChecked": "2/15/2025, 2:33:29 AM"
+      "lastChecked": "2/15/2025, 3:20:22 AM"
     },
     "history": {
       "temperature": "51.1°F (10.6°C)",
@@ -185,41 +185,7 @@
     "forecast": [
       {
         "date": "2025-02-15",
-        "temperature": "47.4°F (8.6°C)",
-        "condition": "Mist",
-        "rainfall": "0 in (0 mm)"
-      },
-      {
-        "date": "2025-02-16",
-        "temperature": "49.3°F (9.6°C)",
-        "condition": "Fog",
-        "rainfall": "0 in (0 mm)"
-      },
-      {
-        "date": "2025-02-17",
-        "temperature": "49°F (9.5°C)",
-        "condition": "Overcast ",
-        "rainfall": "0 in (0 mm)"
-      }
-    ]
-  },
-  "Tamarancho": {
-    "current": {
-      "temperature": "39.4°F (4.1°C)",
-      "condition": "Clear",
-      "wind": "4.9 mph (7.9 kph)",
-      "humidity": "100%",
-      "lastChecked": "2/15/2025, 2:33:29 AM"
-    },
-    "history": {
-      "temperature": "51.6°F (10.9°C)",
-      "condition": "Overcast",
-      "rainfall": "0.32 in (8.19 mm)"
-    },
-    "forecast": [
-      {
-        "date": "2025-02-15",
-        "temperature": "46.7°F (8.1°C)",
+        "temperature": "47.1°F (8.4°C)",
         "condition": "Mist",
         "rainfall": "0 in (0 mm)"
       },
@@ -231,7 +197,41 @@
       },
       {
         "date": "2025-02-17",
-        "temperature": "49.8°F (9.9°C)",
+        "temperature": "49.3°F (9.6°C)",
+        "condition": "Overcast ",
+        "rainfall": "0 in (0 mm)"
+      }
+    ]
+  },
+  "Tamarancho": {
+    "current": {
+      "temperature": "39.2°F (4°C)",
+      "condition": "Clear",
+      "wind": "4 mph (6.5 kph)",
+      "humidity": "100%",
+      "lastChecked": "2/15/2025, 3:20:23 AM"
+    },
+    "history": {
+      "temperature": "51.6°F (10.9°C)",
+      "condition": "Overcast",
+      "rainfall": "0.32 in (8.19 mm)"
+    },
+    "forecast": [
+      {
+        "date": "2025-02-15",
+        "temperature": "45.8°F (7.7°C)",
+        "condition": "Mist",
+        "rainfall": "0 in (0 mm)"
+      },
+      {
+        "date": "2025-02-16",
+        "temperature": "47.9°F (8.8°C)",
+        "condition": "Fog",
+        "rainfall": "0 in (0 mm)"
+      },
+      {
+        "date": "2025-02-17",
+        "temperature": "50.1°F (10.1°C)",
         "condition": "Mist",
         "rainfall": "0 in (0 mm)"
       }
@@ -239,11 +239,11 @@
   },
   "John Nicolas": {
     "current": {
-      "temperature": "41.5°F (5.3°C)",
+      "temperature": "39°F (3.9°C)",
       "condition": "Clear",
       "wind": "2.2 mph (3.6 kph)",
-      "humidity": "89%",
-      "lastChecked": "2/15/2025, 2:33:30 AM"
+      "humidity": "93%",
+      "lastChecked": "2/15/2025, 3:20:23 AM"
     },
     "history": {
       "temperature": "49°F (9.4°C)",
@@ -253,19 +253,19 @@
     "forecast": [
       {
         "date": "2025-02-15",
-        "temperature": "48.9°F (9.4°C)",
+        "temperature": "48.3°F (9.1°C)",
         "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-16",
-        "temperature": "51.3°F (10.7°C)",
+        "temperature": "50.4°F (10.2°C)",
         "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-17",
-        "temperature": "49°F (9.4°C)",
+        "temperature": "49.3°F (9.6°C)",
         "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       }
@@ -273,11 +273,11 @@
   },
   "Soquel Demonstration Forest": {
     "current": {
-      "temperature": "41.2°F (5.1°C)",
+      "temperature": "39.9°F (4.4°C)",
       "condition": "Clear",
-      "wind": "2.9 mph (4.7 kph)",
-      "humidity": "89%",
-      "lastChecked": "2/15/2025, 2:33:30 AM"
+      "wind": "3.1 mph (5 kph)",
+      "humidity": "93%",
+      "lastChecked": "2/15/2025, 3:20:24 AM"
     },
     "history": {
       "temperature": "50.1°F (10.1°C)",
@@ -287,31 +287,31 @@
     "forecast": [
       {
         "date": "2025-02-15",
-        "temperature": "49.5°F (9.7°C)",
+        "temperature": "48.7°F (9.3°C)",
         "condition": "Overcast ",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-16",
-        "temperature": "49.3°F (9.6°C)",
-        "condition": "Fog",
+        "temperature": "50.3°F (10.2°C)",
+        "condition": "Mist",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-17",
-        "temperature": "49.9°F (9.9°C)",
-        "condition": "Cloudy ",
+        "temperature": "50.2°F (10.1°C)",
+        "condition": "Mist",
         "rainfall": "0 in (0 mm)"
       }
     ]
   },
   "Briones": {
     "current": {
-      "temperature": "42.1°F (5.6°C)",
+      "temperature": "41.7°F (5.4°C)",
       "condition": "Clear",
       "wind": "2.2 mph (3.6 kph)",
-      "humidity": "92%",
-      "lastChecked": "2/15/2025, 2:33:31 AM"
+      "humidity": "93%",
+      "lastChecked": "2/15/2025, 3:20:24 AM"
     },
     "history": {
       "temperature": "49.4°F (9.6°C)",
@@ -321,31 +321,31 @@
     "forecast": [
       {
         "date": "2025-02-15",
-        "temperature": "46.2°F (7.9°C)",
+        "temperature": "45.9°F (7.7°C)",
         "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-16",
-        "temperature": "48.1°F (9°C)",
+        "temperature": "47.7°F (8.7°C)",
         "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-17",
-        "temperature": "48.6°F (9.2°C)",
-        "condition": "Overcast ",
+        "temperature": "48.8°F (9.3°C)",
+        "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       }
     ]
   },
   "Lime Ridge": {
     "current": {
-      "temperature": "42.1°F (5.6°C)",
+      "temperature": "41.7°F (5.4°C)",
       "condition": "Clear",
-      "wind": "2.7 mph (4.3 kph)",
-      "humidity": "92%",
-      "lastChecked": "2/15/2025, 2:33:31 AM"
+      "wind": "2.2 mph (3.6 kph)",
+      "humidity": "93%",
+      "lastChecked": "2/15/2025, 3:20:25 AM"
     },
     "history": {
       "temperature": "50.4°F (10.2°C)",
@@ -375,11 +375,11 @@
   },
   "Crockett Hills Regional Park": {
     "current": {
-      "temperature": "42.1°F (5.6°C)",
+      "temperature": "41.7°F (5.4°C)",
       "condition": "Clear",
-      "wind": "3.1 mph (5 kph)",
-      "humidity": "92%",
-      "lastChecked": "2/15/2025, 2:33:32 AM"
+      "wind": "2.2 mph (3.6 kph)",
+      "humidity": "93%",
+      "lastChecked": "2/15/2025, 3:20:25 AM"
     },
     "history": {
       "temperature": "50.6°F (10.3°C)",
@@ -389,31 +389,31 @@
     "forecast": [
       {
         "date": "2025-02-15",
-        "temperature": "45.8°F (7.7°C)",
+        "temperature": "45.4°F (7.4°C)",
         "condition": "Overcast ",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-16",
-        "temperature": "47.9°F (8.9°C)",
+        "temperature": "47.8°F (8.8°C)",
         "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-17",
-        "temperature": "49.4°F (9.7°C)",
-        "condition": "Overcast ",
+        "temperature": "49.5°F (9.7°C)",
+        "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       }
     ]
   },
   "Mission Peak": {
     "current": {
-      "temperature": "41.2°F (5.1°C)",
+      "temperature": "41.5°F (5.3°C)",
       "condition": "Clear",
       "wind": "2.2 mph (3.6 kph)",
       "humidity": "93%",
-      "lastChecked": "2/15/2025, 2:33:33 AM"
+      "lastChecked": "2/15/2025, 3:20:26 AM"
     },
     "history": {
       "temperature": "49°F (9.5°C)",
@@ -443,11 +443,11 @@
   },
   "Brushy Peak": {
     "current": {
-      "temperature": "37.9°F (3.3°C)",
+      "temperature": "37°F (2.8°C)",
       "condition": "Clear",
       "wind": "2.2 mph (3.6 kph)",
-      "humidity": "89%",
-      "lastChecked": "2/15/2025, 2:33:33 AM"
+      "humidity": "92%",
+      "lastChecked": "2/15/2025, 3:20:26 AM"
     },
     "history": {
       "temperature": "48.2°F (9°C)",
@@ -457,19 +457,19 @@
     "forecast": [
       {
         "date": "2025-02-15",
-        "temperature": "46.7°F (8.2°C)",
-        "condition": "Fog",
+        "temperature": "46.9°F (8.3°C)",
+        "condition": "Overcast ",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-16",
-        "temperature": "50.3°F (10.2°C)",
+        "temperature": "49.7°F (9.8°C)",
         "condition": "Mist",
         "rainfall": "0 in (0 mm)"
       },
       {
         "date": "2025-02-17",
-        "temperature": "49°F (9.5°C)",
+        "temperature": "49.2°F (9.6°C)",
         "condition": "Fog",
         "rainfall": "0 in (0 mm)"
       }
