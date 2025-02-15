@@ -1,44 +1,86 @@
-name: Fetch Trail Rideability Data
-
-permissions:
-  contents: write  # Allow write access to repository contents
+name: Fetch Trail Rideability
 
 on:
+  workflow_dispatch:
   schedule:
-    - cron: '0 3 * * *'  # Runs every day at 03:00 UTC
-  workflow_dispatch:      # Allows manual trigger
+    - cron: '0 */6 * * *'  # Run every 6 hours
 
 jobs:
-  fetch-chatgpt-data:
+  update-rideability:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
-          node-version: 16
+          python-version: '3.x'
 
       - name: Install dependencies
-        run: npm install
+        run: |
+          python -m pip install --upgrade pip
+          pip install openai
 
-      - name: Fetch ChatGPT Data and Generate trailStatuses.json
+      - name: Fetch rideability data
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
-          set -e
-          node fetchRideability.js || echo "Warning: fetchRideability.js failed."
+          python - <<EOF
+          import json
+          import openai
+          import os
 
-      - name: Commit and push changes if trailStatuses.json is updated
+          openai.api_key = os.getenv('OPENAI_API_KEY')
+
+          def determine_rideability(trail_data):
+              prompt = f"""
+              Determine if the trail is rideable based on the following data:
+              Current conditions: {json.dumps(trail_data['current'])}
+              Historical data: {json.dumps(trail_data['history'])}
+              Forecast: {json.dumps(trail_data['forecast'])}
+
+              Respond with one of the following:
+              1. "Rideable"
+              2. "Not Rideable"
+              3. "Caution"
+
+              Provide a brief explanation for your decision.
+              """
+
+              response = openai.ChatCompletion.create(
+                  model="gpt-3.5-turbo",
+                  messages=[
+                      {"role": "system", "content": "You are an expert trail condition analyzer."},
+                      {"role": "user", "content": prompt}
+                  ]
+              )
+
+              return response.choices[0].message['content'].strip()
+
+          # Read the existing JSON file
+          with open('public/trailStatuses.json', 'r') as f:
+              trail_statuses = json.load(f)
+
+          # Process each trail
+          for trail_name, trail_data in trail_statuses.items():
+              rideability_info = determine_rideability(trail_data)
+              trail_data['rideability'] = rideability_info
+
+          # Write the updated data back to the JSON file
+          with open('public/trailStatuses.json', 'w') as f:
+              json.dump(trail_statuses, f, indent=2)
+
+          print("Rideability data updated successfully.")
+          EOF
+
+      - name: Commit and push changes
+        env:
+          GH_PAT: ${{ secrets.GH_PAT }}
         run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-          if [[ `git status --porcelain` ]]; then
-            git add trailStatuses.json
-            git commit -m "Update trail rideability data"
-            git push
-          else
-            echo "No changes to commit."
-          fi
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add -f public/trailStatuses.json  # Force add ignored file
+          git commit -m "Auto-update trail rideability" || echo "No changes to commit"
+          git push https://x-access-token:${GH_PAT}@github.com/mincedfish/heysteve.git HEAD:main
+
