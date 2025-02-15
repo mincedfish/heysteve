@@ -6,7 +6,6 @@
   <component name="ChangeListManager">
     <list default="true" id="0c85003c-84af-45ec-8dd4-452018585992" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/src/Map.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Map.jsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/trails.js" beforeDir="false" afterPath="$PROJECT_DIR$/trails.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,11 +30,12 @@
     "RunOnceActivity.git.unshallow": "true",
     "git-widget-placeholder": "main",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/mincedfish/Desktop/heysteve/.github/workflows"
+    "last_opened_file_path": "C:/Users/mincedfish/Desktop/heysteve/src"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\mincedfish\Desktop\heysteve\src" />
       <recent name="C:\Users\mincedfish\Desktop\heysteve\.github\workflows" />
       <recent name="C:\Users\mincedfish\Desktop\heysteve\public" />
     </key>

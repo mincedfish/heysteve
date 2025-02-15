@@ -1,5 +1,8 @@
 import { useState, useEffect } from "react";
-import trails from "./trails"; // ✅ Correct relative path
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import trails from "./trails";
 
 const TRAIL_STATUSES_URL = "https://raw.githubusercontent.com/mincedfish/heysteve/main/public/trailStatuses.json";
 
@@ -7,40 +10,20 @@ const Map = () => {
   const [trailData, setTrailData] = useState({});
   const [selectedTrail, setSelectedTrail] = useState(null);
 
-  // Function to fetch trail statuses from GitHub
-  const fetchTrailData = async () => {
-    try {
-      console.log("Fetching trail statuses...");
-      const response = await fetch(`${TRAIL_STATUSES_URL}?t=${new Date().getTime()}`);
-      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
-
-      const statusData = await response.json();
-      console.log("Fetched trail statuses:", statusData);
-
-      // ✅ Merge static trails with statuses
-      const mergedTrails = trails.map((trail) => ({
-        ...trail,
-        ...(statusData[trail.name] || {}), // Merge matching trail data
-      }));
-
-      // Convert array to object for easy access
-      const trailDataObject = mergedTrails.reduce((acc, trail) => {
-        acc[trail.name] = trail;
-        return acc;
-      }, {});
-
-      setTrailData(trailDataObject);
-    } catch (err) {
-      console.error("Error fetching trail data:", err);
-    }
-  };
-
   useEffect(() => {
-    fetchTrailData(); // Fetch on mount
+    console.log("Fetching trail data...");
+    fetch(`${TRAIL_STATUSES_URL}?t=${new Date().getTime()}`)
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Fetched trail data:", data);
+        setTrailData(data);
+      })
+      .catch((err) => console.error("Error fetching trail data:", err));
   }, []);
 
-  // Handle when a pin is clicked
+  // Handle clicking a pin
   const handlePinClick = (trailName) => {
+    console.log(`Clicked: ${trailName}`);
     if (trailData[trailName]) {
       setSelectedTrail(trailData[trailName]);
     } else {
@@ -48,32 +31,39 @@ const Map = () => {
     }
   };
 
-  // Handle closing the sidebar
-  const closeSidebar = () => {
-    setSelectedTrail(null);
-  };
-
   return (
     <div>
       <h1>Map Loaded</h1>
-      <div id="map">
-        <p>Map should be here...</p>
-        {trails.map((trail) => (
-          <button key={trail.name} onClick={() => handlePinClick(trail.name)}>
-            {trail.name}
-          </button>
-        ))}
-      </div>
-
-      {/* Debug: Show fetched trailData */}
-      <pre>{JSON.stringify(trailData, null, 2)}</pre>
+      <MapContainer center={[37.8, -122.4]} zoom={8} style={{ height: "500px", width: "100%" }}>
+        <TileLayer
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        />
+        {trails.map((trail, index) => {
+          if (!trail.lat || !trail.lon) {
+            console.error(`Missing coordinates for: ${trail.name}`);
+            return null;
+          }
+          return (
+            <Marker
+              key={index}
+              position={[trail.lat, trail.lon]}
+              eventHandlers={{
+                click: () => handlePinClick(trail.name),
+              }}
+            >
+              <Popup>{trail.name}</Popup>
+            </Marker>
+          );
+        })}
+      </MapContainer>
 
       {selectedTrail && (
         <div className="sidebar">
-          <button className="close-btn" onClick={closeSidebar}>X</button>
+          <button className="close-btn" onClick={() => setSelectedTrail(null)}>X</button>
           <h2>{selectedTrail.name}</h2>
-          <p><strong>Status:</strong> {selectedTrail.status || "Unknown"}</p>
-          <p><strong>Condition:</strong> {selectedTrail.conditionDetails || "Unknown"}</p>
+          <p><strong>Status:</strong> {selectedTrail.status}</p>
+          <p><strong>Condition:</strong> {selectedTrail.conditionDetails}</p>
           <p><strong>Temperature:</strong> {selectedTrail.current?.temperature || "N/A"}</p>
           <p><strong>Weather:</strong> {selectedTrail.current?.condition || "N/A"}</p>
           <p><strong>Wind:</strong> {selectedTrail.current?.wind || "N/A"}</p>
