@@ -13,7 +13,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          persist-credentials: false  # Disables default token, we'll use our secret instead
+          token: ${{ secrets.REPO }}  # Use your GitHub secret token
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -28,19 +28,12 @@ jobs:
           WEATHERAPI: ${{ secrets.WEATHERAPI }}
         run: node updateTrailStatuses.js
 
-      - name: Move trailStatuses.json to public directory
-        run: |
-          mkdir -p public  # Ensure the public directory exists
-          mv trailStatuses.json public/trailStatuses.json  # Move file to public/
-
       - name: Commit and push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.repo }}  # Uses your stored repo token
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git remote set-url origin https://x-access-token:${{ secrets.repo }}@github.com/mincedfish/heysteve.git
+          git pull --rebase  # Pull latest changes before pushing
           git add public/trailStatuses.json
-          git commit -m "Auto-update trail statuses" || echo "No changes to commit"
+          git commit -m "Auto-update trail statuses"
           git push origin main
         continue-on-error: true
