@@ -82,15 +82,6 @@ const TrailMap = () => {
     }
   }, [map])
 
-  const getRideabilityInfo = (trailData) => {
-    if (!trailData || !trailData.rideability) return { status: "Unknown", explanation: "" }
-
-    const [status, ...explanationParts] = trailData.rideability.split("\n")
-    const explanation = explanationParts.join("\n").trim()
-
-    return { status, explanation }
-  }
-
   const closeSidebar = () => {
     setSelectedTrail(null)
     if (activeMarker) {
@@ -118,12 +109,15 @@ const TrailMap = () => {
         <div
           style={{
             width: "300px",
-            padding: "15px",
-            background: "#f4f4f4",
+            padding: "20px",
+            background: "linear-gradient(135deg, #fffae3, #f8e1a1)",
             overflowY: "auto",
-            borderRight: "1px solid #ddd",
+            borderRight: "2px solid #ddd",
             transition: "transform 0.3s ease-in-out",
             position: "relative",
+            fontFamily: "Arial, sans-serif",
+            color: "#333",
+            boxShadow: "4px 0 10px rgba(0, 0, 0, 0.1)",
           }}
         >
           <button
@@ -132,7 +126,7 @@ const TrailMap = () => {
               position: "absolute",
               top: "10px",
               right: "10px",
-              background: "red",
+              background: "#ff4d4d",
               color: "white",
               border: "none",
               borderRadius: "50%",
@@ -145,99 +139,34 @@ const TrailMap = () => {
             ✕
           </button>
 
-          <h2>{selectedTrail.name}</h2>
+          <h2 style={{ color: "#2c3e50", fontWeight: "bold" }}>🚵 {selectedTrail.name}</h2>
           {selectedTrail.data ? (
             <>
-              <h3>Current Conditions</h3>
-              <p>
-                <strong>Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}
-              </p>
-              <p>
-                <strong>Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}
-              </p>
-              <p>
-                <strong>Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}
-              </p>
-              <p>
-                <strong>Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}
-              </p>
-              <p>
-                <strong>Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}
-              </p>
-              <p>
-                <strong>Rainfall in Last 24 Hours:</strong> {selectedTrail.data.history?.rainfall || "N/A"} in
-              </p>
+              <h3>🌤️ Current Conditions</h3>
+              <p><strong>📅 Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}</p>
+              <p><strong>🌡️ Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}°F</p>
+              <p><strong>💨 Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
+              <p><strong>💧 Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
+              <p><strong>🌧️ Rainfall (24h):</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
 
-              <h3>Weather Forecast</h3>
-              {selectedTrail.data.forecast ? (
-                <div>
-                  {selectedTrail.data.forecast.map((day, index) => {
-                    const date = new Date(day.date)
-                    const formattedDate = `${date.getMonth() + 1}-${date.getDate()}`
-                    return (
-                      <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
-                        <p>
-                          <strong>Date:</strong> {formattedDate}
-                        </p>
-                        <p>
-                          <strong>Condition:</strong> {day.condition}
-                        </p>
-                        <p>
-                          <strong>Temperature:</strong> {day.temperature}°F
-                        </p>
-                        <p>
-                          <strong>Rainfall:</strong> {day.rainfall} in
-                        </p>
-                      </div>
-                    )
-                  })}
+              <h3>🔮 Weather Forecast</h3>
+              {selectedTrail.data.forecast?.map((day, index) => (
+                <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+                  <p><strong>📅 {new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</strong></p>
+                  <p>🌤️ {day.condition}</p>
+                  <p>🌡️ {day.temperature}°F</p>
+                  <p>🌧️ {day.rainfall} in</p>
                 </div>
-              ) : (
-                <p>No forecast available.</p>
-              )}
+              )) || <p>No forecast available.</p>}
             </>
-          ) : (
-            <p>Data not available</p>
-          )}
+          ) : <p>Data not available</p>}
         </div>
       )}
 
       <div style={{ flex: 1 }}>
-        <MapContainer
-          center={[37.9061, -122.5957]}
-          zoom={9}
-          style={{ height: "100%", width: "100%" }}
-          whenCreated={setMap}
-        >
+        <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: "100%", width: "100%" }} whenCreated={setMap}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <FitBoundsToMarkers />
-          {trails.map((trail) => {
-            const trailData = trailStatuses[trail.name]
-            const { status, explanation } = getRideabilityInfo(trailData)
-
-            return (
-              <Marker
-                key={trail.name}
-                position={[trail.lat, trail.lon]}
-                icon={defaultIcon}
-                eventHandlers={{
-                  click: (e) => handleMarkerClick(trail, e.target),
-                }}
-              >
-                <Popup>
-                  <h3>{trail.name}</h3>
-                  <p>
-                    <strong>Send it?</strong> {status}
-                  </p>
-                  {explanation && (
-                    <p>
-                      <strong>Explanation:</strong> {explanation}
-                    </p>
-                  )}
-                </Popup>
-              </Marker>
-            )
-          })}
         </MapContainer>
       </div>
     </div>
