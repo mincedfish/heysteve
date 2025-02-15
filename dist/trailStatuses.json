@@ -1,98 +1,104 @@
 {
   "Mt. Tamalpais": {
-    "status": "Rideable",
-    "conditionDetails": "Dry",
-    "temperature": "56°F (14°C)",
-    "weatherConditions": "Partly sunny",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Trails are in good condition with no reported hazards."
+    "current": {
+      "temperature": "56°F (13°C)",
+      "condition": "Partly cloudy",
+      "wind": "10 mph (16 kph)",
+      "humidity": "72%",
+      "lastChecked": "02-14-2025 08:00 AM PST"
+    },
+    "history": {
+      "temperature": "54°F (12°C)",
+      "condition": "Mostly cloudy",
+      "rainfall": "0.1 in (2.5 mm)"
+    },
+    "forecast": [
+      {
+        "date": "02-15-2025",
+        "temperature": "57°F (14°C)",
+        "condition": "Sunny",
+        "rainfall": "0.0 in (0.0 mm)"
+      },
+      {
+        "date": "02-16-2025",
+        "temperature": "60°F (16°C)",
+        "condition": "Mostly sunny",
+        "rainfall": "0.0 in (0.0 mm)"
+      },
+      {
+        "date": "02-17-2025",
+        "temperature": "58°F (14°C)",
+        "condition": "Cloudy",
+        "rainfall": "0.2 in (5.0 mm)"
+      }
+    ]
   },
-  "Ford Ord": {
-    "status": "Not Rideable",
-    "conditionDetails": "Wet",
-    "temperature": "56°F (14°C)",
-    "weatherConditions": "Breezy with clouds and breaks of sun; a couple of showers this afternoon",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Heavy rain overnight; trails are muddy and unsafe for riding."
+  "Mission Peak": {
+    "current": {
+      "temperature": "58°F (14°C)",
+      "condition": "Sunny",
+      "wind": "12 mph (19 kph)",
+      "humidity": "65%",
+      "lastChecked": "02-14-2025 08:00 AM PST"
+    },
+    "history": {
+      "temperature": "56°F (13°C)",
+      "condition": "Partly cloudy",
+      "rainfall": "0.0 in (0.0 mm)"
+    },
+    "forecast": [
+      {
+        "date": "02-15-2025",
+        "temperature": "60°F (16°C)",
+        "condition": "Mostly sunny",
+        "rainfall": "0.0 in (0.0 mm)"
+      },
+      {
+        "date": "02-16-2025",
+        "temperature": "62°F (17°C)",
+        "condition": "Sunny",
+        "rainfall": "0.0 in (0.0 mm)"
+      },
+      {
+        "date": "02-17-2025",
+        "temperature": "59°F (15°C)",
+        "condition": "Partly cloudy",
+        "rainfall": "0.1 in (2.5 mm)"
+      }
+    ]
   },
-  "Rockville Hills Regional Park": {
-    "status": "Rideable",
-    "conditionDetails": "Dry",
-    "temperature": "38°F (4°C)",
-    "weatherConditions": "Mainly cloudy and chilly; breezy this morning, then a couple of showers this afternoon",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Trails are clear with no significant hazards reported."
-  },
-  "China Camp State Park": {
-    "status": "Not Rideable",
-    "conditionDetails": "Mud",
-    "temperature": "61°F (16°C)",
-    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Mud after recent rainfall; trails are slippery and unsafe."
-  },
-  "Joaquin Miller Park": {
-    "status": "Rideable",
-    "conditionDetails": "Dry",
-    "temperature": "57°F (14°C)",
-    "weatherConditions": "Intervals of clouds and sunshine with a brief shower or two",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Trails are in good condition; minor wet spots in shaded areas."
-  },
-  "Pacifica": {
-    "status": "Not Rideable",
-    "conditionDetails": "Wet",
-    "temperature": "57°F (14°C)",
-    "weatherConditions": "Intervals of clouds and sunshine with a brief shower or two",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Recent rain has made trails muddy and unsafe for riding."
-  },
-  "Tamarancho": {
-    "status": "Rideable",
-    "conditionDetails": "Dry",
-    "temperature": "61°F (16°C)",
-    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Trails are clear with no significant hazards reported."
-  },
-  "John Nicolas": {
-    "status": "Not Rideable",
-    "conditionDetails": "Mud",
-    "temperature": "61°F (16°C)",
-    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Mud after recent rainfall; trails are slippery and unsafe."
-  },
-  "Soquel Demonstration Forest": {
-    "status": "Rideable",
-    "conditionDetails": "Dry",
-    "temperature": "61°F (16°C)",
-    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Trails are in good condition with no reported hazards."
-  },
-  "Briones": {
-    "status": "Rideable",
-    "conditionDetails": "Dry",
-    "temperature": "61°F (16°C)",
-    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Trails are clear with no significant hazards reported."
-  },
-  "Lime Ridge": {
-    "status": "Rideable",
-    "conditionDetails": "Dry",
-    "temperature": "61°F (16°C)",
-    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Trails are in good condition with no reported hazards."
-  },
-  "Crockett Hills Regional Park": {
-    "status": "Not Rideable",
-    "conditionDetails": "Mud",
-    "temperature": "61°F (16°C)",
-    "weatherConditions": "Cool with intervals of clouds and sunshine; breezy this afternoon",
-    "lastChecked": "2025-02-14T12:00:00Z",
-    "notes": "Mud after recent rainfall; trails are slippery and unsafe."
+  "Brushy Peak": {
+    "current": {
+      "temperature": "55°F (13°C)",
+      "condition": "Mostly cloudy",
+      "wind": "9 mph (14 kph)",
+      "humidity": "68%",
+      "lastChecked": "02-14-2025 08:00 AM PST"
+    },
+    "history": {
+      "temperature": "53°F (12°C)",
+      "condition": "Cloudy",
+      "rainfall": "0.2 in (5.1 mm)"
+    },
+    "forecast": [
+      {
+        "date": "02-15-2025",
+        "temperature": "57°F (14°C)",
+        "condition": "Partly cloudy",
+        "rainfall": "0.0 in (0.0 mm)"
+      },
+      {
+        "date": "02-16-2025",
+        "temperature": "60°F (16°C)",
+        "condition": "Mostly sunny",
+        "rainfall": "0.0 in (0.0 mm)"
+      },
+      {
+        "date": "02-17-2025",
+        "temperature": "58°F (14°C)",
+        "condition": "Cloudy",
+        "rainfall": "0.3 in (7.6 mm)"
+      }
+    ]
   }
 }
