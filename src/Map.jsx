@@ -119,6 +119,34 @@ const TrailMap = () => {
 
   return (
     <div style={{ display: "flex", width: "100%", height: "100vh" }}>
+      {/* Sidebar */}
+      <div
+        style={{
+          width: "320px",
+          background: "#333",
+          color: "#fff",
+          padding: "20px",
+          overflowY: "auto",
+          transition: "transform 0.3s ease-in-out",
+          transform: selectedTrail ? "translateX(0)" : "translateX(-100%)",
+          position: "fixed",
+          top: 0,
+          left: 0,
+          height: "100%",
+          zIndex: 1000,
+        }}
+      >
+        <button onClick={resetSidebar} style={{ background: "red", color: "white", border: "none", padding: "10px", cursor: "pointer" }}>Close</button>
+        {selectedTrail ? (
+          <>
+            <h2>{selectedTrail.name}</h2>
+            <p><strong>Send it?</strong> {getRideabilityInfo(selectedTrail.data).status}</p>
+          </>
+        ) : (
+          <p>Select a trail marker to see details.</p>
+        )}
+      </div>
+      {/* Map Container */}
       <div style={{ flex: 1 }}>
         <MapContainer
           center={[37.9061, -122.5957]}
@@ -137,9 +165,7 @@ const TrailMap = () => {
             >
               <Popup>
                 <h3>{trail.name}</h3>
-                <p>
-                  <strong>Send it?</strong> {getRideabilityInfo(trailStatuses[trail.name]).status}
-                </p>
+                <p><strong>Send it?</strong> {getRideabilityInfo(trailStatuses[trail.name]).status}</p>
               </Popup>
             </Marker>
           ))}
