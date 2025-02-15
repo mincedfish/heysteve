@@ -5,9 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="0c85003c-84af-45ec-8dd4-452018585992" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.github/workflows/update_trail_status.yml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/trails.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/updateTrailStatuses.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/public/trailStatuses.json" beforeDir="false" afterPath="$PROJECT_DIR$/public/trailStatuses.json" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Map.jsx" beforeDir="false" afterPath="$PROJECT_DIR$/src/Map.jsx" afterDir="false" />

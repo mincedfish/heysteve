@@ -13,24 +13,47 @@
       "rainfall": "0.1 in (2.5 mm)"
     },
     "forecast": [
-      {
-        "date": "02-15-2025",
-        "temperature": "57°F (14°C)",
-        "condition": "Sunny",
-        "rainfall": "0.0 in (0.0 mm)"
-      },
-      {
-        "date": "02-16-2025",
-        "temperature": "60°F (16°C)",
-        "condition": "Mostly sunny",
-        "rainfall": "0.0 in (0.0 mm)"
-      },
-      {
-        "date": "02-17-2025",
-        "temperature": "58°F (14°C)",
-        "condition": "Cloudy",
-        "rainfall": "0.2 in (5.0 mm)"
-      }
+      { "date": "02-15-2025", "temperature": "57°F (14°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-16-2025", "temperature": "60°F (16°C)", "condition": "Mostly sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-17-2025", "temperature": "58°F (14°C)", "condition": "Cloudy", "rainfall": "0.2 in (5.0 mm)" }
+    ]
+  },
+  "Ford Ord": {
+    "current": {
+      "temperature": "59°F (15°C)",
+      "condition": "Sunny",
+      "wind": "8 mph (13 kph)",
+      "humidity": "70%",
+      "lastChecked": "02-14-2025 08:00 AM PST"
+    },
+    "history": {
+      "temperature": "58°F (14°C)",
+      "condition": "Partly cloudy",
+      "rainfall": "0.0 in (0.0 mm)"
+    },
+    "forecast": [
+      { "date": "02-15-2025", "temperature": "60°F (16°C)", "condition": "Mostly sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-16-2025", "temperature": "63°F (17°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-17-2025", "temperature": "61°F (16°C)", "condition": "Partly cloudy", "rainfall": "0.1 in (2.5 mm)" }
+    ]
+  },
+  "Rockville Hills Regional Park": {
+    "current": {
+      "temperature": "57°F (14°C)",
+      "condition": "Mostly sunny",
+      "wind": "7 mph (11 kph)",
+      "humidity": "65%",
+      "lastChecked": "02-14-2025 08:00 AM PST"
+    },
+    "history": {
+      "temperature": "55°F (13°C)",
+      "condition": "Partly cloudy",
+      "rainfall": "0.1 in (2.5 mm)"
+    },
+    "forecast": [
+      { "date": "02-15-2025", "temperature": "58°F (14°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-16-2025", "temperature": "61°F (16°C)", "condition": "Mostly sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-17-2025", "temperature": "59°F (15°C)", "condition": "Cloudy", "rainfall": "0.3 in (7.6 mm)" }
     ]
   },
   "Mission Peak": {
@@ -47,24 +70,9 @@
       "rainfall": "0.0 in (0.0 mm)"
     },
     "forecast": [
-      {
-        "date": "02-15-2025",
-        "temperature": "60°F (16°C)",
-        "condition": "Mostly sunny",
-        "rainfall": "0.0 in (0.0 mm)"
-      },
-      {
-        "date": "02-16-2025",
-        "temperature": "62°F (17°C)",
-        "condition": "Sunny",
-        "rainfall": "0.0 in (0.0 mm)"
-      },
-      {
-        "date": "02-17-2025",
-        "temperature": "59°F (15°C)",
-        "condition": "Partly cloudy",
-        "rainfall": "0.1 in (2.5 mm)"
-      }
+      { "date": "02-15-2025", "temperature": "60°F (16°C)", "condition": "Mostly sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-16-2025", "temperature": "62°F (17°C)", "condition": "Sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-17-2025", "temperature": "59°F (15°C)", "condition": "Partly cloudy", "rainfall": "0.1 in (2.5 mm)" }
     ]
   },
   "Brushy Peak": {
@@ -81,24 +89,9 @@
       "rainfall": "0.2 in (5.1 mm)"
     },
     "forecast": [
-      {
-        "date": "02-15-2025",
-        "temperature": "57°F (14°C)",
-        "condition": "Partly cloudy",
-        "rainfall": "0.0 in (0.0 mm)"
-      },
-      {
-        "date": "02-16-2025",
-        "temperature": "60°F (16°C)",
-        "condition": "Mostly sunny",
-        "rainfall": "0.0 in (0.0 mm)"
-      },
-      {
-        "date": "02-17-2025",
-        "temperature": "58°F (14°C)",
-        "condition": "Cloudy",
-        "rainfall": "0.3 in (7.6 mm)"
-      }
+      { "date": "02-15-2025", "temperature": "57°F (14°C)", "condition": "Partly cloudy", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-16-2025", "temperature": "60°F (16°C)", "condition": "Mostly sunny", "rainfall": "0.0 in (0.0 mm)" },
+      { "date": "02-17-2025", "temperature": "58°F (14°C)", "condition": "Cloudy", "rainfall": "0.3 in (7.6 mm)" }
     ]
   }
 }
