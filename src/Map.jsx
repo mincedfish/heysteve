@@ -4,9 +4,8 @@ import { useEffect, useState, useCallback } from "react"
 import { MapContainer, TileLayer, Marker, Popup, useMap } from "react-leaflet"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
-import trails from "../trails" // Ensure this path is correct
+import trails from "../trails"
 
-// Define colored icons
 const createIcon = (color) => {
   return new L.Icon({
     iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
@@ -23,14 +22,12 @@ const activeIcon = createIcon("red")
 
 function FitBoundsToMarkers() {
   const map = useMap()
-
   useEffect(() => {
     if (map) {
       const bounds = L.latLngBounds(trails.map((trail) => [trail.lat, trail.lon]))
       map.fitBounds(bounds, { padding: [50, 50] })
     }
   }, [map])
-
   return null
 }
 
@@ -45,27 +42,14 @@ const TrailMap = () => {
     const basePath = process.env.PUBLIC_URL || "/heysteve"
     const jsonUrl = `${basePath}/trailStatuses.json?t=${Date.now()}`
 
-    console.log("Fetching trail statuses from:", jsonUrl)
-
     try {
       const response = await fetch(jsonUrl, {
         method: "GET",
-        headers: {
-          "Cache-Control": "no-cache, no-store, must-revalidate",
-          Pragma: "no-cache",
-          Expires: "0",
-        },
+        headers: { "Cache-Control": "no-cache, no-store, must-revalidate", Pragma: "no-cache", Expires: "0" },
       })
-
-      if (!response.ok) {
-        throw new Error(`HTTP error! status: ${response.status}`)
-      }
-
-      const data = await response.json()
-      console.log("Fetched trailStatuses:", data)
-      setTrailStatuses(data)
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+      setTrailStatuses(await response.json())
     } catch (error) {
-      console.error("Error fetching trailStatuses.json:", error)
       setError(error.message)
     }
   }, [])
@@ -76,11 +60,11 @@ const TrailMap = () => {
     return () => clearInterval(intervalId)
   }, [fetchTrailStatuses])
 
-  useEffect(() => {
-    if (map) {
-      map.invalidateSize()
-    }
-  }, [map])
+  const getRideabilityInfo = (trailData) => {
+    if (!trailData || !trailData.rideability) return { status: "Unknown", explanation: "" }
+    const [status, ...explanationParts] = trailData.rideability.split("\n")
+    return { status, explanation: explanationParts.join("\n").trim() }
+  }
 
   const closeSidebar = () => {
     setSelectedTrail(null)
@@ -90,34 +74,20 @@ const TrailMap = () => {
     }
   }
 
-  const handleMarkerClick = (trail, marker) => {
-    if (activeMarker && activeMarker !== marker) {
-      activeMarker.setIcon(defaultIcon)
-    }
-    marker.setIcon(activeIcon)
-    setActiveMarker(marker)
-    setSelectedTrail({ ...trail, data: trailStatuses[trail.name] })
-  }
-
-  if (error) {
-    return <div>Error loading trail statuses: {error}</div>
-  }
-
   return (
     <div style={{ display: "flex", width: "100%", height: "100vh" }}>
       {selectedTrail && (
         <div
           style={{
-            width: "300px",
+            width: "320px",
             padding: "20px",
-            background: "linear-gradient(135deg, #fffae3, #f8e1a1)",
+            background: "linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%)",
+            fontFamily: "Arial, sans-serif",
+            borderRight: "1px solid #ddd",
             overflowY: "auto",
-            borderRight: "2px solid #ddd",
+            boxShadow: "2px 0 10px rgba(0, 0, 0, 0.1)",
             transition: "transform 0.3s ease-in-out",
             position: "relative",
-            fontFamily: "Arial, sans-serif",
-            color: "#333",
-            boxShadow: "4px 0 10px rgba(0, 0, 0, 0.1)",
           }}
         >
           <button
@@ -139,27 +109,36 @@ const TrailMap = () => {
             ✕
           </button>
 
-          <h2 style={{ color: "#2c3e50", fontWeight: "bold" }}>🚵 {selectedTrail.name}</h2>
+          <h2 style={{ color: "#333" }}>🚵 {selectedTrail.name}</h2>
           {selectedTrail.data ? (
             <>
-              <h3>🌤️ Current Conditions</h3>
+              <h3>📍 Current Conditions</h3>
               <p><strong>📅 Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}</p>
-              <p><strong>🌡️ Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}°F</p>
+              <p><strong>🌡 Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}°F</p>
+              <p><strong>🌤 Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}</p>
               <p><strong>💨 Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
               <p><strong>💧 Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
-              <p><strong>🌧️ Rainfall (24h):</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
+              <p><strong>🌧 Rainfall (24h):</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
 
               <h3>🔮 Weather Forecast</h3>
-              {selectedTrail.data.forecast?.map((day, index) => (
-                <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
-                  <p><strong>📅 {new Date(day.date).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}</strong></p>
-                  <p>🌤️ {day.condition}</p>
-                  <p>🌡️ {day.temperature}°F</p>
-                  <p>🌧️ {day.rainfall} in</p>
+              {selectedTrail.data.forecast ? (
+                <div>
+                  {selectedTrail.data.forecast.map((day, index) => (
+                    <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
+                      <p><strong>📆 Date:</strong> {new Date(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
+                      <p><strong>🌤 Condition:</strong> {day.condition}</p>
+                      <p><strong>🌡 Temperature:</strong> {day.temperature}°F</p>
+                      <p><strong>🌧 Rainfall:</strong> {day.rainfall} in</p>
+                    </div>
+                  ))}
                 </div>
-              )) || <p>No forecast available.</p>}
+              ) : (
+                <p>No forecast available.</p>
+              )}
             </>
-          ) : <p>Data not available</p>}
+          ) : (
+            <p>Data not available</p>
+          )}
         </div>
       )}
 
@@ -167,6 +146,19 @@ const TrailMap = () => {
         <MapContainer center={[37.9061, -122.5957]} zoom={9} style={{ height: "100%", width: "100%" }} whenCreated={setMap}>
           <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
           <FitBoundsToMarkers />
+          {trails.map((trail) => (
+            <Marker
+              key={trail.name}
+              position={[trail.lat, trail.lon]}
+              icon={defaultIcon}
+              eventHandlers={{ click: (e) => setSelectedTrail({ ...trail, data: trailStatuses[trail.name] }) }}
+            >
+              <Popup>
+                <h3>🚵 {trail.name}</h3>
+                <p><strong>✅ Send it?</strong> {trailStatuses[trail.name]?.rideability || "Unknown"}</p>
+              </Popup>
+            </Marker>
+          ))}
         </MapContainer>
       </div>
     </div>
