@@ -15,10 +15,10 @@ const BASE_URL = "https://api.weatherapi.com/v1";
 async function fetchWeatherData(lat, lon) {
   try {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`);
-    const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3&hour=1`); // Fetch hourly forecast for 3 days
+    const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3`);
 
     const historyData = {};
-    // Fetch historical data for the last 5 days by hour
+    // Fetch historical data for the last 5 days
     for (let i = 2; i <= 6; i++) { // Skip today (i=1)
       const date = getPastDate(i);
       const historyRes = await fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${date}`);
@@ -92,12 +92,18 @@ async function updateTrailStatuses() {
       history: {
         rainfall_last_5_days: weatherData.history
       },
-      forecast: weatherData.forecast.forecast.forecastday.map((day) => ({
-        date: adjustForecastDate(day.date), // Use the adjusted date here
-        temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
-        condition: day.day.condition.text,
-        rainfall: calculateDailyRainfall(day.hour)
-      }))
+      forecast: weatherData.forecast.forecast.forecastday
+        .filter(day => {
+          const forecastDate = new Date(day.date);
+          // Only keep the forecast for future days (not today)
+          return forecastDate > new Date();
+        })
+        .map((day) => ({
+          date: adjustForecastDate(day.date), // Use the adjusted date here
+          temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
+          condition: day.day.condition.text,
+          rainfall: calculateDailyRainfall(day.hour)
+        }))
     };
   }
 
@@ -124,7 +130,3 @@ function adjustForecastDate(date) {
 function calculateDailyRainfall(hourlyData) {
   const totalRainfallInches = hourlyData.reduce((total, hour) => total + (hour?.precip_in || 0), 0);
   const totalRainfallMm = totalRainfallInches * 25.4; // Convert inches to millimeters
-  return `${totalRainfallInches.toFixed(2)} in (${totalRainfallMm.toFixed(2)} mm)`;
-}
-
-updateTrailStatuses();
