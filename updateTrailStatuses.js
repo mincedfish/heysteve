@@ -130,3 +130,7 @@ function adjustForecastDate(date) {
 function calculateDailyRainfall(hourlyData) {
   const totalRainfallInches = hourlyData.reduce((total, hour) => total + (hour?.precip_in || 0), 0);
   const totalRainfallMm = totalRainfallInches * 25.4; // Convert inches to millimeters
+  return `${totalRainfallInches.toFixed(2)} in (${totalRainfallMm.toFixed(2)} mm)`;
+}
+
+updateTrailStatuses();
