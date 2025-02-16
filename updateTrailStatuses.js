@@ -17,21 +17,24 @@ async function fetchWeatherData(lat, lon) {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`);
     const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3`);
 
-    const historyPromises = [];
+    const historyData = {};
     for (let i = 1; i <= 5; i++) {
       const date = getPastDate(i);
-      historyPromises.push(fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${date}`));
+      const historyRes = await fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${date}`);
+      if (historyRes.ok) {
+        const data = await historyRes.json();
+        historyData[date] = `${data.forecast.forecastday[0].day.totalprecip_in} in (${data.forecast.forecastday[0].day.totalprecip_mm} mm)`;
+      } else {
+        console.warn(`⚠️ Failed to fetch history for ${date}`);
+      }
     }
 
-    const historyResponses = await Promise.all(historyPromises);
-
-    if (!currentRes.ok || !forecastRes.ok || historyResponses.some(res => !res.ok)) {
+    if (!currentRes.ok || !forecastRes.ok) {
       throw new Error("WeatherAPI request failed");
     }
 
     const currentData = await currentRes.json();
     const forecastData = await forecastRes.json();
-    const historyData = await Promise.all(historyResponses.map(res => res.json()));
 
     return { current: currentData, history: historyData, forecast: forecastData };
   } catch (error) {
@@ -54,11 +57,6 @@ async function updateTrailStatuses() {
     const weatherData = await fetchWeatherData(trail.lat, trail.lon);
     if (!weatherData) continue;
 
-    const rainfallPast5Days = weatherData.history.map(day => ({
-      date: day.forecast.forecastday[0].date,
-      rainfall: `${day.forecast.forecastday[0].day.totalprecip_in} in (${day.forecast.forecastday[0].day.totalprecip_mm} mm)`
-    }));
-
     trailStatuses[trail.name] = {
       current: {
         temperature: `${weatherData.current.current.temp_f}°F (${weatherData.current.current.temp_c}°C)`,
@@ -68,7 +66,7 @@ async function updateTrailStatuses() {
         lastChecked: new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
       },
       history: {
-        rainfallPast5Days
+        rainfall_last_5_days: weatherData.history
       },
       forecast: weatherData.forecast.forecast.forecastday.map((day) => ({
         date: day.date,
