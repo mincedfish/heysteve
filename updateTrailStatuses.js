@@ -95,10 +95,10 @@ async function updateTrailStatuses() {
       forecast: weatherData.forecast.forecast.forecastday
         .filter(day => {
           const forecastDate = new Date(day.date);
-          // Exclude today's forecast
+          // Exclude today's forecast and include only the next 2 days
           return forecastDate > new Date();
         })
-        .slice(0, 3) // Ensure we only take up to the next 3 days
+        .slice(0, 2) // Only include the next 2 days
         .map((day) => ({
           date: adjustForecastDate(day.date), // Use the adjusted date here
           temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
