@@ -17,7 +17,7 @@ const BASE_URL = "https://api.weatherapi.com/v1"
 async function fetchWeatherData(lat, lon) {
   try {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`)
-    const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3`) // Request 3-day forecast
+    const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=4`) // Request 4-day forecast
 
     const historyData = {}
     // Fetch historical data for the last 5 days
@@ -111,20 +111,10 @@ function getUniqueForecastDays(forecastData) {
 
   console.log("Current date and time (Pacific):", pacificNow.toISOString())
   console.log("Today's date:", today)
-  console.log(
-    "Forecast data received:",
-    forecastData.map((day) => ({
-      date: day.date,
-      dateTime: day.date_epoch * 1000, // Convert epoch to milliseconds
-      firstHourTime: day.hour[0].time,
-    })),
-  )
+  console.log("Forecast data received:", JSON.stringify(forecastData, null, 2))
 
-  // Sort all forecast days
-  const sortedForecastDays = forecastData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
-
-  // Take the next two days after today, regardless of whether today is included
-  const nextTwoDays = sortedForecastDays.filter((day) => day.date >= today).slice(1, 3)
+  // Filter out today's date and take the next 2 days
+  const nextTwoDays = forecastData.filter((day) => day.date > today).slice(0, 2)
 
   console.log(
     "Selected forecast days:",
@@ -134,12 +124,16 @@ function getUniqueForecastDays(forecastData) {
     })),
   )
 
-  return nextTwoDays.map((day) => ({
+  const result = nextTwoDays.map((day) => ({
     date: day.date,
     temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
     condition: day.day.condition.text,
     rainfall: calculateDailyRainfall(day.hour),
   }))
+
+  console.log("Final forecast result:", JSON.stringify(result, null, 2))
+
+  return result
 }
 
 // Calculate total rainfall for a day's forecast by summing the hourly values
