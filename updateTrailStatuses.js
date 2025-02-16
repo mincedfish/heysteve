@@ -15,16 +15,21 @@ const BASE_URL = "https://api.weatherapi.com/v1";
 async function fetchWeatherData(lat, lon) {
   try {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`);
-    const historyRes = await fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${getYesterdayDate()}`);
     const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3`);
 
-    if (!currentRes.ok || !historyRes.ok || !forecastRes.ok) {
+    const historyResPromises = [];
+    for (let i = 1; i <= 5; i++) {
+      historyResPromises.push(fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${getPastDate(i)}`));
+    }
+
+    const historyResponses = await Promise.all(historyResPromises);
+    if (!currentRes.ok || !forecastRes.ok || historyResponses.some(res => !res.ok)) {
       throw new Error("WeatherAPI request failed");
     }
 
     const currentData = await currentRes.json();
-    const historyData = await historyRes.json();
     const forecastData = await forecastRes.json();
+    const historyData = await Promise.all(historyResponses.map(res => res.json()));
 
     return { current: currentData, history: historyData, forecast: forecastData };
   } catch (error) {
@@ -33,9 +38,9 @@ async function fetchWeatherData(lat, lon) {
   }
 }
 
-function getYesterdayDate() {
+function getPastDate(daysAgo) {
   const date = new Date();
-  date.setDate(date.getDate() - 1);
+  date.setDate(date.getDate() - daysAgo);
   return date.toISOString().split("T")[0];
 }
 
@@ -72,9 +77,10 @@ async function updateTrailStatuses() {
         lastChecked: new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
       },
       history: {
-        temperature: `${weatherData.history.forecast.forecastday[0].day.avgtemp_f}°F (${weatherData.history.forecast.forecastday[0].day.avgtemp_c}°C)`,
-        condition: weatherData.history.forecast.forecastday[0].day.condition.text,
-        rainfall: `${weatherData.history.forecast.forecastday[0].day.totalprecip_in} in (${weatherData.history.forecast.forecastday[0].day.totalprecip_mm} mm)`
+        pastRainfall: weatherData.history.map((day, index) => ({
+          date: getPastDate(index + 1),
+          rainfall: `${day.forecast.forecastday[0].day.totalprecip_in} in (${day.forecast.forecastday[0].day.totalprecip_mm} mm)`
+        }))
       },
       forecast: weatherData.forecast.forecast.forecastday.map((day) => ({
         date: day.date,
