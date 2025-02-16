@@ -1,12 +1,21 @@
-import { copyFile } from "fs/promises";
+import fs from "fs";
+import path from "path";
 
-const source = "updateTrailStatuses.js";
-const destination = "public/updateTrailStatuses.js";
+// Define paths
+const publicDir = path.join(process.cwd(), "public");
+const distDir = path.join(process.cwd(), "dist");
+const trailsFile = path.join(publicDir, "trails.js");
+const distTrailsFile = path.join(distDir, "trails.js");
 
-try {
-  await copyFile(source, destination);
-  console.log(`Copied ${source} to ${destination}`);
-} catch (err) {
-  console.error("Error copying file:", err);
-  process.exit(1);
+// Ensure the dist directory exists
+if (!fs.existsSync(distDir)) {
+    fs.mkdirSync(distDir, { recursive: true });
+}
+
+// Copy trails.js to dist/
+if (fs.existsSync(trailsFile)) {
+    fs.copyFileSync(trailsFile, distTrailsFile);
+    console.log("✅ trails.js copied to dist/");
+} else {
+    console.error("❌ trails.js not found in public/. Make sure it exists.");
 }
