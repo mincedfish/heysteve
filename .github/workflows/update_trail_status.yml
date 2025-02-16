@@ -23,12 +23,13 @@ jobs:
       - name: Install dependencies
         run: npm install node-fetch
 
-      - name: Copy required files to public directory
+      - name: Build project
+        run: npm run build  # Replace with your build command
+
+      - name: Copy build files to public directory
         run: |
           mkdir -p public
-          cp index.html public/  # Copy index.html to public/
-          cp updateTrailStatuses.js public/updateTrailStatuses.js
-          cp trails.js public/trails.js  # Copy trails.js to public/
+          cp -r dist/* public/  # Copy everything from dist to public
 
       - name: Fetch Weather Data and Update trailStatuses.json
         env:
