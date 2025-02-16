@@ -104,17 +104,20 @@ async function updateTrailStatuses() {
 // Ensure we get unique future dates for forecast
 function getUniqueForecastDays(forecastData) {
   const now = new Date()
-  console.log("Current date and time:", now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }))
+  const today = now.toISOString().split("T")[0] // Get today's date in YYYY-MM-DD format
+  console.log("Current date:", today)
   console.log(
     "Forecast data received:",
     forecastData.map((day) => ({ date: day.date, hour: day.hour[0].time })),
   )
 
-  // Sort the forecast data by date
-  const sortedForecastDays = forecastData.sort((a, b) => new Date(a.date) - new Date(b.date))
+  // Filter out today's forecast and sort the remaining days
+  const futureForecastDays = forecastData
+    .filter((day) => day.date > today)
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
-  // Take the first two days from the sorted forecast
-  const nextTwoDays = sortedForecastDays.slice(0, 2)
+  // Take the first two days from the future forecast
+  const nextTwoDays = futureForecastDays.slice(0, 2)
 
   console.log(
     "Selected forecast days:",
