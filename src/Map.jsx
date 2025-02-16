@@ -19,6 +19,12 @@ const parseDateTime = (dateString) => {
   return new Date(dateString)
 }
 
+// Helper function to format the date for the forecast section
+const formatForecastDate = (dateString) => {
+  const date = parseDateTime(dateString)
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+}
+
 const createIcon = (color) => {
   return new L.Icon({
     iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
@@ -159,7 +165,7 @@ const TrailMap = () => {
                 <div>
                   {selectedTrail.data.forecast.map((day, index) => (
                     <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
-                      <p><strong>📆 Date:</strong> {parseDateTime(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
+                      <p><strong>📆 Date:</strong> {formatForecastDate(day.date)}</p>
                       <p><strong>🌤 Condition:</strong> {day.condition}</p>
                       <p><strong>🌡 Temperature:</strong> {day.temperature}°F</p>
                       <p><strong>🌧 Rainfall:</strong> {day.rainfall} in</p>
