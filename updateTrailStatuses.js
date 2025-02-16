@@ -93,14 +93,9 @@ async function updateTrailStatuses() {
         rainfall_last_5_days: weatherData.history
       },
       forecast: weatherData.forecast.forecast.forecastday
-        .filter(day => {
-          const forecastDate = new Date(day.date);
-          // Exclude today's forecast and include only the next 2 days
-          return forecastDate > new Date();
-        })
-        .slice(0, 2) // Only include the next 2 days
+        .slice(1, 3) // Get the next 2 days from the forecast (1st and 2nd days after today)
         .map((day) => ({
-          date: adjustForecastDate(day.date), // Use the adjusted date here
+          date: adjustForecastDate(day.date), // Adjust the forecast date for time zone
           temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
           condition: day.day.condition.text,
           rainfall: calculateDailyRainfall(day.hour)
