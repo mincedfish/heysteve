@@ -93,7 +93,7 @@ async function updateTrailStatuses() {
         rainfall_last_5_days: weatherData.history
       },
       forecast: weatherData.forecast.forecast.forecastday.map((day) => ({
-        date: adjustForecastDate(day.date),
+        date: adjustForecastDate(day.date), // Use the adjusted date here
         temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
         condition: day.day.condition.text,
         rainfall: calculateDailyRainfall(day.hour)
@@ -110,7 +110,14 @@ function adjustForecastDate(date) {
   const offset = getPacificOffset();
   const forecastDate = new Date(date);
   forecastDate.setHours(forecastDate.getHours() - offset); // Adjust for Pacific Time
-  return forecastDate.toISOString().split("T")[0]; // Return the adjusted date
+
+  // Add a check to ensure that we are not using today's date but the correct future date
+  const currentDate = new Date();
+  if (forecastDate.toDateString() === currentDate.toDateString()) {
+    forecastDate.setDate(forecastDate.getDate() + 1); // Move to the next day if the date is today
+  }
+
+  return forecastDate.toISOString().split("T")[0]; // Return the adjusted date in YYYY-MM-DD format
 }
 
 // Calculate total rainfall for a day's forecast by summing the hourly values
