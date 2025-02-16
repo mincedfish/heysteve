@@ -21,9 +21,11 @@ const parseDateTime = (dateString) => {
 
 // Helper function to format the date for the forecast section
 const formatForecastDate = (dateString) => {
-  const date = parseDateTime(dateString)
-  return date.toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })
+  const [year, month, day] = dateString.split("-").map(Number)
+  const date = new Date(year, month - 1, day) // JS months are 0-based
+  return date.toLocaleDateString(undefined, { month: "short", day: "numeric" })
 }
+
 
 const createIcon = (color) => {
   return new L.Icon({
