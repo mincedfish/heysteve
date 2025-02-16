@@ -10,23 +10,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout main branch
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           persist-credentials: false
-          ref: main
-
-      - name: Ensure public directory exists
-        run: mkdir -p public
-
-      - name: Copy updateTrailStatuses.js to public
-        run: cp updateTrailStatuses.js public/
-
-      - name: Fetch and switch to gh-pages branch
-        run: |
-          git fetch origin gh-pages || git checkout --orphan gh-pages
-          git checkout gh-pages
-          git pull origin gh-pages || echo "Creating gh-pages branch"
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -35,6 +22,9 @@ jobs:
 
       - name: Install dependencies
         run: npm install node-fetch
+
+      - name: Copy updateTrailStatuses.js to public directory
+        run: cp updateTrailStatuses.js public/updateTrailStatuses.js
 
       - name: Fetch Weather Data and Update trailStatuses.json
         env:
@@ -47,6 +37,6 @@ jobs:
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add -f public/trailStatuses.json public/updateTrailStatuses.js
-          git commit -m "Auto-update trail statuses and script" || echo "No changes to commit"
+          git add public/trailStatuses.json public/updateTrailStatuses.js
+          git commit -m "Auto-update trail statuses" || echo "No changes to commit"
           git push https://x-access-token:${GH_PAT}@github.com/mincedfish/heysteve.git HEAD:gh-pages
