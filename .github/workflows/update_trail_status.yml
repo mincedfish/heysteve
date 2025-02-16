@@ -26,6 +26,7 @@ jobs:
       - name: Copy required files to public directory
         run: |
           mkdir -p public
+          cp index.html public/  # Copy index.html to public/
           cp updateTrailStatuses.js public/updateTrailStatuses.js
           cp trails.js public/trails.js  # Copy trails.js to public/
 
