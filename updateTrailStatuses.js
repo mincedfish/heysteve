@@ -17,12 +17,14 @@ async function fetchWeatherData(lat, lon) {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`);
     const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3`);
 
-    const historyResPromises = [];
+    const historyPromises = [];
     for (let i = 1; i <= 5; i++) {
-      historyResPromises.push(fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${getPastDate(i)}`));
+      const date = getPastDate(i);
+      historyPromises.push(fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${date}`));
     }
 
-    const historyResponses = await Promise.all(historyResPromises);
+    const historyResponses = await Promise.all(historyPromises);
+
     if (!currentRes.ok || !forecastRes.ok || historyResponses.some(res => !res.ok)) {
       throw new Error("WeatherAPI request failed");
     }
@@ -44,20 +46,6 @@ function getPastDate(daysAgo) {
   return date.toISOString().split("T")[0];
 }
 
-function determineRideability(weather) {
-  if (!weather) return { status: "Unknown", conditionDetails: "No data available" };
-
-  const conditionText = weather.current.condition.text.toLowerCase();
-  const tempF = weather.current.temp_f;
-  const precipIn = weather.current.precip_in;
-
-  if (precipIn > 0.1) return { status: "Not Rideable", conditionDetails: "Wet/Muddy" };
-  if (conditionText.includes("snow") || conditionText.includes("storm")) return { status: "Not Rideable", conditionDetails: "Snow/Ice or Stormy" };
-  if (tempF < 35) return { status: "Caution", conditionDetails: "Very Cold" };
-
-  return { status: "Rideable", conditionDetails: "Dry or Minimal Moisture" };
-}
-
 async function updateTrailStatuses() {
   const trailStatuses = {};
 
@@ -66,7 +54,10 @@ async function updateTrailStatuses() {
     const weatherData = await fetchWeatherData(trail.lat, trail.lon);
     if (!weatherData) continue;
 
-    const rideability = determineRideability(weatherData.current);
+    const rainfallPast5Days = weatherData.history.map(day => ({
+      date: day.forecast.forecastday[0].date,
+      rainfall: `${day.forecast.forecastday[0].day.totalprecip_in} in (${day.forecast.forecastday[0].day.totalprecip_mm} mm)`
+    }));
 
     trailStatuses[trail.name] = {
       current: {
@@ -77,10 +68,7 @@ async function updateTrailStatuses() {
         lastChecked: new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
       },
       history: {
-        pastRainfall: weatherData.history.map((day, index) => ({
-          date: getPastDate(index + 1),
-          rainfall: `${day.forecast.forecastday[0].day.totalprecip_in} in (${day.forecast.forecastday[0].day.totalprecip_mm} mm)`
-        }))
+        rainfallPast5Days
       },
       forecast: weatherData.forecast.forecast.forecastday.map((day) => ({
         date: day.date,
