@@ -183,8 +183,8 @@ const TrailMap = () => {
                     <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
                       <p><strong>📆 Date:</strong> {formatForecastDate(day.date)}</p>
                       <p><strong>🌤 Condition:</strong> {day.condition}</p>
-                      <p><strong>🌡 Temperature:</strong> {day.temperature}°F</p>
-                      <p><strong>🌧 Rainfall:</strong> {day.rainfall} in</p>
+                      <p><strong>🌡 Temperature:</strong> {day.temperature}</p>
+                      <p><strong>🌧 Rainfall:</strong> {day.rainfall}</p>
                     </div>
                   ))}
                 </div>
