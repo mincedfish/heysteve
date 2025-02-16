@@ -15,15 +15,34 @@ const BASE_URL = "https://api.weatherapi.com/v1";
 async function fetchWeatherData(lat, lon) {
   try {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`);
-    const historyRes = await fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${getYesterdayDate()}`);
     const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3`);
 
-    if (!currentRes.ok || !historyRes.ok || !forecastRes.ok) {
+    const historyData = {};
+    for (let i = 1; i <= 5; i++) {
+      const date = getPastDate(i);
+      const historyRes = await fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${date}`);
+      if (historyRes.ok) {
+        const data = await historyRes.json();
+        const rainfallInches = data.forecast.forecastday[0]?.day?.totalprecip_in;
+        const rainfallMm = data.forecast.forecastday[0]?.day?.totalprecip_mm;
+        if (rainfallInches !== undefined && rainfallMm !== undefined) {
+          historyData[date] = `${rainfallInches} in (${rainfallMm} mm)`;
+        } else {
+          console.warn(`⚠️ No rainfall data for ${date}`);
+        }
+      } else {
+        console.warn(`⚠️ Failed to fetch history for ${date}`);
+      }
+
+      // Optional: Add a delay between API requests to avoid hitting rate limits
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay between requests
+    }
+
+    if (!currentRes.ok || !forecastRes.ok) {
       throw new Error("WeatherAPI request failed");
     }
 
     const currentData = await currentRes.json();
-    const historyData = await historyRes.json();
     const forecastData = await forecastRes.json();
 
     return { current: currentData, history: historyData, forecast: forecastData };
@@ -33,24 +52,10 @@ async function fetchWeatherData(lat, lon) {
   }
 }
 
-function getYesterdayDate() {
+function getPastDate(daysAgo) {
   const date = new Date();
-  date.setDate(date.getDate() - 1);
+  date.setDate(date.getDate() - daysAgo);
   return date.toISOString().split("T")[0];
-}
-
-function determineRideability(weather) {
-  if (!weather) return { status: "Unknown", conditionDetails: "No data available" };
-
-  const conditionText = weather.current.condition.text.toLowerCase();
-  const tempF = weather.current.temp_f;
-  const precipIn = weather.current.precip_in;
-
-  if (precipIn > 0.1) return { status: "Not Rideable", conditionDetails: "Wet/Muddy" };
-  if (conditionText.includes("snow") || conditionText.includes("storm")) return { status: "Not Rideable", conditionDetails: "Snow/Ice or Stormy" };
-  if (tempF < 35) return { status: "Caution", conditionDetails: "Very Cold" };
-
-  return { status: "Rideable", conditionDetails: "Dry or Minimal Moisture" };
 }
 
 async function updateTrailStatuses() {
@@ -61,8 +66,6 @@ async function updateTrailStatuses() {
     const weatherData = await fetchWeatherData(trail.lat, trail.lon);
     if (!weatherData) continue;
 
-    const rideability = determineRideability(weatherData.current);
-
     trailStatuses[trail.name] = {
       current: {
         temperature: `${weatherData.current.current.temp_f}°F (${weatherData.current.current.temp_c}°C)`,
@@ -72,9 +75,7 @@ async function updateTrailStatuses() {
         lastChecked: new Date().toLocaleString("en-US", { timeZone: "America/Los_Angeles" })
       },
       history: {
-        temperature: `${weatherData.history.forecast.forecastday[0].day.avgtemp_f}°F (${weatherData.history.forecast.forecastday[0].day.avgtemp_c}°C)`,
-        condition: weatherData.history.forecast.forecastday[0].day.condition.text,
-        rainfall: `${weatherData.history.forecast.forecastday[0].day.totalprecip_in} in (${weatherData.history.forecast.forecastday[0].day.totalprecip_mm} mm)`
+        rainfall_last_5_days: weatherData.history
       },
       forecast: weatherData.forecast.forecast.forecastday.map((day) => ({
         date: day.date,

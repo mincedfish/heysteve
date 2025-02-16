@@ -6,6 +6,20 @@
   <component name="ChangeListManager">
     <list default="true" id="0c85003c-84af-45ec-8dd4-452018585992" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/copyScript.js" beforeDir="false" afterPath="$PROJECT_DIR$/copyScript.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/assets/icon-192x192.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/assets/icon-512x512.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/assets/index-Cb_xbjvd.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/assets/index-DYx7-rfR.css" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/favicon.svg" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/index.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/manifest.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/serice-worker.jsx" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/sw.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/trailStatuses.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/trails.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/dist/updateTrailStatuses.js" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
