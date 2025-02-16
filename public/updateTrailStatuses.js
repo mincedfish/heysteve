@@ -12,35 +12,29 @@ if (!fs.existsSync(filePath)) {
 const API_KEY = process.env.WEATHERAPI;
 const BASE_URL = "https://api.weatherapi.com/v1";
 
-// Get the current Pacific Time offset (in hours)
-function getPacificOffset() {
-  const now = new Date();
-  const offset = now.getHours() - new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })).getHours();
-  return offset;
-}
-
 async function fetchWeatherData(lat, lon) {
   try {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`);
-    const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3`);
+    const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3&hour=1`); // Fetch hourly forecast for 3 days
 
     const historyData = {};
-    for (let i = 1; i <= 5; i++) {
+    // Fetch historical data for the last 5 days by hour
+    for (let i = 2; i <= 6; i++) { // Skip today (i=1)
       const date = getPastDate(i);
-      console.log(`Fetching history for ${date}...`);
-
       const historyRes = await fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${date}`);
+
       if (historyRes.ok) {
         const data = await historyRes.json();
         console.log(`History response for ${date}:`, data);
 
-        const rainfallInches = data.forecast.forecastday[0]?.day?.totalprecip_in;
-        const rainfallMm = data.forecast.forecastday[0]?.day?.totalprecip_mm;
-
-        if (rainfallInches !== undefined && rainfallMm !== undefined) {
-          historyData[date] = `${rainfallInches} in (${rainfallMm} mm)`;
+        // Calculate total rainfall in the last 24 hours from hourly data
+        const hourlyRainfall = data.forecast.forecastday[0]?.hour;
+        if (hourlyRainfall) {
+          const totalRainfallInches = hourlyRainfall.reduce((total, hour) => total + (hour?.precip_in || 0), 0);
+          const totalRainfallMm = totalRainfallInches * 25.4; // Convert inches to millimeters
+          historyData[date] = `${totalRainfallInches.toFixed(2)} in (${totalRainfallMm.toFixed(2)} mm)`;
         } else {
-          console.warn(`⚠️ No rainfall data for ${date}`);
+          console.warn(`⚠️ No hourly data for ${date}`);
         }
       } else {
         console.warn(`⚠️ Failed to fetch history for ${date}`);
@@ -73,6 +67,12 @@ function getPastDate(daysAgo) {
   return date.toISOString().split("T")[0]; // Return date in YYYY-MM-DD format
 }
 
+function getPacificOffset() {
+  const now = new Date();
+  const offset = now.getHours() - new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })).getHours();
+  return offset;
+}
+
 async function updateTrailStatuses() {
   const trailStatuses = {};
 
@@ -96,7 +96,7 @@ async function updateTrailStatuses() {
         date: adjustForecastDate(day.date),
         temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
         condition: day.day.condition.text,
-        rainfall: `${day.day.totalprecip_in} in (${day.day.totalprecip_mm} mm)`
+        rainfall: calculateDailyRainfall(day.hour)
       }))
     };
   }
@@ -111,6 +111,13 @@ function adjustForecastDate(date) {
   const forecastDate = new Date(date);
   forecastDate.setHours(forecastDate.getHours() - offset); // Adjust for Pacific Time
   return forecastDate.toISOString().split("T")[0]; // Return the adjusted date
+}
+
+// Calculate total rainfall for a day's forecast by summing the hourly values
+function calculateDailyRainfall(hourlyData) {
+  const totalRainfallInches = hourlyData.reduce((total, hour) => total + (hour?.precip_in || 0), 0);
+  const totalRainfallMm = totalRainfallInches * 25.4; // Convert inches to millimeters
+  return `${totalRainfallInches.toFixed(2)} in (${totalRainfallMm.toFixed(2)} mm)`;
 }
 
 updateTrailStatuses();
