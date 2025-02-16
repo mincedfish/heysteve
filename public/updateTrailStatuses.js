@@ -69,8 +69,8 @@ function getPastDate(daysAgo) {
 
 function getPacificOffset() {
   const now = new Date();
-  const offset = now.getHours() - new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })).getHours();
-  return offset;
+  const pacificTime = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }));
+  return (now.getTime() - pacificTime.getTime()) / (1000 * 60 * 60);
 }
 
 async function updateTrailStatuses() {
@@ -92,25 +92,33 @@ async function updateTrailStatuses() {
       history: {
         rainfall_last_5_days: weatherData.history
       },
-      forecast: weatherData.forecast.forecast.forecastday
-        .filter((day, index) => {
-          const forecastDate = new Date(day.date);
-          const currentDate = new Date();
-          // Exclude today's forecast and ensure unique dates for the next two days
-          return forecastDate > currentDate && forecastDate.toDateString() !== currentDate.toDateString();
-        })
-        .slice(0, 2) // Ensure we only take the next 2 days
-        .map((day) => ({
-          date: adjustForecastDate(day.date), // Adjust the forecast date for time zone
-          temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
-          condition: day.day.condition.text,
-          rainfall: calculateDailyRainfall(day.hour)
-        }))
+      forecast: getUniqueForecastDays(weatherData.forecast.forecast.forecastday)
     };
   }
 
   fs.writeFileSync(filePath, JSON.stringify(trailStatuses, null, 2));
   console.log("✅ trailStatuses.json has been updated!");
+}
+
+// Ensure we get unique future dates for forecast
+function getUniqueForecastDays(forecastData) {
+  const today = new Date().toDateString();
+  const forecastDays = forecastData
+    .filter(day => {
+      const forecastDate = new Date(day.date);
+      return forecastDate.toDateString() !== today; // Exclude today's forecast
+    })
+    .slice(0, 2); // Get the next 2 unique forecast days
+
+  console.log("Forecast data received:", forecastData.map(day => day.date));
+  console.log("Filtered and adjusted forecast days:", forecastDays.map(day => adjustForecastDate(day.date)));
+
+  return forecastDays.map((day) => ({
+    date: adjustForecastDate(day.date), // Adjust the forecast date for time zone
+    temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
+    condition: day.day.condition.text,
+    rainfall: calculateDailyRainfall(day.hour)
+  }));
 }
 
 // Adjust forecast date to account for time zone offset
