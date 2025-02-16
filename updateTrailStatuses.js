@@ -103,30 +103,26 @@ async function updateTrailStatuses() {
 
 // Ensure we get unique future dates for forecast
 function getUniqueForecastDays(forecastData) {
-  const today = new Date()
-  today.setHours(0, 0, 0, 0) // Set to start of day in local time
-
-  console.log("Today's date:", today.toISOString())
+  const now = new Date()
+  console.log("Current date and time:", now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }))
   console.log(
     "Forecast data received:",
-    forecastData.map((day) => day.date),
+    forecastData.map((day) => ({ date: day.date, hour: day.hour[0].time })),
   )
 
-  const forecastDays = forecastData
-    .filter((day) => {
-      const forecastDate = new Date(day.date)
-      forecastDate.setHours(0, 0, 0, 0) // Set to start of day
-      return forecastDate > today // Only include dates after today
-    })
-    .slice(0, 2) // Get the next 2 forecast days
+  // Sort the forecast data by date
+  const sortedForecastDays = forecastData.sort((a, b) => new Date(a.date) - new Date(b.date))
+
+  // Take the first two days from the sorted forecast
+  const nextTwoDays = sortedForecastDays.slice(0, 2)
 
   console.log(
-    "Filtered forecast days:",
-    forecastDays.map((day) => day.date),
+    "Selected forecast days:",
+    nextTwoDays.map((day) => day.date),
   )
 
-  return forecastDays.map((day) => ({
-    date: day.date, // Use the date directly from the API
+  return nextTwoDays.map((day) => ({
+    date: day.date,
     temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
     condition: day.day.condition.text,
     rainfall: calculateDailyRainfall(day.hour),
