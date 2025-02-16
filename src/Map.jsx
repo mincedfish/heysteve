@@ -161,7 +161,7 @@ const TrailMap = () => {
 
               <div style={{ marginTop: "30px" }}></div> {/* Space between sections */}
 
-              <h3>🌧 Historic Rainfall (Last 5 Days)</h3>
+              <h3>🌧 Recent Rainfall </h3>
               {selectedTrail.data.history?.rainfall_last_5_days ? (
                 <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
                   {Object.entries(selectedTrail.data.history.rainfall_last_5_days).map(([date, rainfall], index) => (
