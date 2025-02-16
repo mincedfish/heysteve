@@ -1,13 +1,12 @@
-const fs = require("fs");
+import { copyFile } from "fs/promises";
 
 const source = "updateTrailStatuses.js";
 const destination = "public/updateTrailStatuses.js";
 
-fs.copyFile(source, destination, (err) => {
-  if (err) {
-    console.error("Error copying file:", err);
-    process.exit(1);
-  } else {
-    console.log(`Copied ${source} to ${destination}`);
-  }
-});
+try {
+  await copyFile(source, destination);
+  console.log(`Copied ${source} to ${destination}`);
+} catch (err) {
+  console.error("Error copying file:", err);
+  process.exit(1);
+}
