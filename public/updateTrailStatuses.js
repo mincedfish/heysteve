@@ -20,25 +20,28 @@ async function fetchWeatherData(lat, lon) {
     const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=4`) // Request 4-day forecast
 
     const historyData = {}
-    // Fetch historical data for the last 5 days
-    for (let i = 2; i <= 6; i++) {
-      // Skip today (i=1)
+    const today = new Date().toISOString().split("T")[0]
+
+    // Fetch historical data for the last 6 days
+    for (let i = 1; i <= 6; i++) {
       const date = getPastDate(i)
+
+      // Skip if the date matches today
+      if (date === today) {
+        console.log(`Skipping today's date: ${date}`)
+        continue
+      }
+
       const historyRes = await fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${date}`)
 
       if (historyRes.ok) {
         const data = await historyRes.json()
         console.log(`History response for ${date}:`, data)
 
-        // Calculate total rainfall in the last 24 hours from hourly data
-        const hourlyRainfall = data.forecast.forecastday[0]?.hour
-        if (hourlyRainfall) {
-          const totalRainfallInches = hourlyRainfall.reduce((total, hour) => total + (hour?.precip_in || 0), 0)
-          const totalRainfallMm = totalRainfallInches * 25.4 // Convert inches to millimeters
-          historyData[date] = `${totalRainfallInches.toFixed(2)} in (${totalRainfallMm.toFixed(2)} mm)`
-        } else {
-          console.warn(`⚠️ No hourly data for ${date}`)
-        }
+        // Calculate total rainfall for the day
+        const totalRainfallMm = data.forecast.forecastday[0]?.day?.totalprecip_mm || 0
+        const totalRainfallInches = data.forecast.forecastday[0]?.day?.totalprecip_in || 0
+        historyData[date] = `${totalRainfallInches.toFixed(2)} in (${totalRainfallMm.toFixed(2)} mm)`
       } else {
         console.warn(`⚠️ Failed to fetch history for ${date}`)
       }
