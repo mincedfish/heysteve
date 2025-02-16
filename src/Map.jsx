@@ -8,9 +8,8 @@ import trails from "../trails"
 
 // Helper function to parse and format the date correctly
 const parseDate = (dateString) => {
-  // Example: If the date format is "MM/DD/YYYY", adjust accordingly
-  const [month, day, year] = dateString.split('/');
-  return new Date(`${year}-${month}-${day}`);
+  const [month, day, year] = dateString.split('/')
+  return new Date(`${year}-${month}-${day}`)
 }
 
 const createIcon = (color) => {
@@ -61,6 +60,7 @@ const TrailMap = () => {
       })
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
       const data = await response.json()
+      console.log("Fetched trail statuses:", data) // Log data to ensure it is fetched correctly
       setTrailStatuses(data)
     } catch (error) {
       setError(error.message)
@@ -92,6 +92,7 @@ const TrailMap = () => {
   }
 
   const handleMarkerClick = (trail, marker) => {
+    console.log("Trail data for", trail.name, trailStatuses[trail.name]) // Log the trail data when a marker is clicked
     if (activeMarker && activeMarker !== marker) {
       activeMarker.setIcon(defaultIcon)
     }
