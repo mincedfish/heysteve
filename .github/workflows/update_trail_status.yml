@@ -25,6 +25,7 @@ jobs:
 
       - name: Copy required files to public directory
         run: |
+          mkdir -p public
           cp updateTrailStatuses.js public/updateTrailStatuses.js
           cp trails.js public/trails.js  # Copy trails.js to public/
 
@@ -33,12 +34,15 @@ jobs:
           WEATHERAPI: ${{ secrets.WEATHERAPI }}
         run: node public/updateTrailStatuses.js
 
-      - name: Commit and push changes to gh-pages
+      - name: Deploy public/ to gh-pages
         env:
           GH_PAT: ${{ secrets.GH_PAT }}
         run: |
+          cd public
+          git init
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add public/trailStatuses.json public/updateTrailStatuses.js public/trails.js
-          git commit -m "Auto-update trail statuses and trails.js" || echo "No changes to commit"
-          git push --force https://x-access-token:${GH_PAT}@github.com/mincedfish/heysteve.git HEAD:gh-pages
+          git add .
+          git commit -m "Auto-update trail statuses and trails.js"
+          git branch -M gh-pages
+          git push --force https://x-access-token:${GH_PAT}@github.com/mincedfish/heysteve.git gh-pages
