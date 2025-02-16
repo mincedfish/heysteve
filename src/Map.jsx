@@ -8,8 +8,14 @@ import trails from "../trails"
 
 // Helper function to parse and format the date correctly
 const parseDate = (dateString) => {
-  const [month, day, year] = dateString.split('/')
-  return new Date(`${year}-${month}-${day}`)
+  // Check if the dateString contains a comma (e.g., "2/15/2025, 4:59:19 PM")
+  if (dateString.includes(',')) {
+    const [datePart] = dateString.split(',') // Extract the date part (e.g., "2/15/2025")
+    const [month, day, year] = datePart.split('/') // Split into month, day, year
+    return new Date(`${year}-${month}-${day}`) // Format to "YYYY-MM-DD"
+  }
+  // For forecast dates already in "YYYY-MM-DD" format
+  return new Date(dateString)
 }
 
 const createIcon = (color) => {
@@ -60,7 +66,6 @@ const TrailMap = () => {
       })
       if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
       const data = await response.json()
-      console.log("Fetched trail statuses:", data) // Log data to ensure it is fetched correctly
       setTrailStatuses(data)
     } catch (error) {
       setError(error.message)
@@ -92,7 +97,6 @@ const TrailMap = () => {
   }
 
   const handleMarkerClick = (trail, marker) => {
-    console.log("Trail data for", trail.name, trailStatuses[trail.name]) // Log the trail data when a marker is clicked
     if (activeMarker && activeMarker !== marker) {
       activeMarker.setIcon(defaultIcon)
     }
@@ -140,8 +144,8 @@ const TrailMap = () => {
           {selectedTrail.data ? (
             <>
               <h3>📍 Current Conditions</h3>
-              <p><strong>📅 Last Updated:</strong> {selectedTrail.data.current?.lastChecked || "N/A"}</p>
-              <p><strong>🌡 Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}°F</p>
+              <p><strong>📅 Last Updated:</strong> {parseDate(selectedTrail.data.current?.lastChecked).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</p>
+              <p><strong>🌡 Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}</p>
               <p><strong>🌤 Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}</p>
               <p><strong>💨 Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
               <p><strong>💧 Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
