@@ -23,10 +23,19 @@ async function fetchWeatherData(lat, lon) {
       const historyRes = await fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${date}`);
       if (historyRes.ok) {
         const data = await historyRes.json();
-        historyData[date] = `${data.forecast.forecastday[0].day.totalprecip_in} in (${data.forecast.forecastday[0].day.totalprecip_mm} mm)`;
+        const rainfallInches = data.forecast.forecastday[0]?.day?.totalprecip_in;
+        const rainfallMm = data.forecast.forecastday[0]?.day?.totalprecip_mm;
+        if (rainfallInches !== undefined && rainfallMm !== undefined) {
+          historyData[date] = `${rainfallInches} in (${rainfallMm} mm)`;
+        } else {
+          console.warn(`⚠️ No rainfall data for ${date}`);
+        }
       } else {
         console.warn(`⚠️ Failed to fetch history for ${date}`);
       }
+
+      // Optional: Add a delay between API requests to avoid hitting rate limits
+      await new Promise(resolve => setTimeout(resolve, 1000)); // 1 second delay between requests
     }
 
     if (!currentRes.ok || !forecastRes.ok) {
