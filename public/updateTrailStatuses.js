@@ -103,38 +103,34 @@ async function updateTrailStatuses() {
 
 // Ensure we get unique future dates for forecast
 function getUniqueForecastDays(forecastData) {
-  const today = new Date().toDateString()
-  const forecastDays = forecastData
-    .filter((day) => {
-      const forecastDate = new Date(day.date)
-      return forecastDate.toDateString() !== today // Exclude today's forecast
-    })
-    .slice(0, 2) // Get the next 2 unique forecast days
+  const today = new Date()
+  today.setHours(0, 0, 0, 0) // Set to start of day in local time
 
+  console.log("Today's date:", today.toISOString())
   console.log(
     "Forecast data received:",
     forecastData.map((day) => day.date),
   )
+
+  const forecastDays = forecastData
+    .filter((day) => {
+      const forecastDate = new Date(day.date)
+      forecastDate.setHours(0, 0, 0, 0) // Set to start of day
+      return forecastDate > today // Only include dates after today
+    })
+    .slice(0, 2) // Get the next 2 forecast days
+
   console.log(
-    "Filtered and adjusted forecast days:",
-    forecastDays.map((day) => adjustForecastDate(day.date)),
+    "Filtered forecast days:",
+    forecastDays.map((day) => day.date),
   )
 
   return forecastDays.map((day) => ({
-    date: adjustForecastDate(day.date), // Adjust the forecast date for time zone
+    date: day.date, // Use the date directly from the API
     temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
     condition: day.day.condition.text,
     rainfall: calculateDailyRainfall(day.hour),
   }))
-}
-
-// Adjust forecast date to account for time zone offset
-function adjustForecastDate(date) {
-  const offset = getPacificOffset()
-  const forecastDate = new Date(date)
-  forecastDate.setHours(forecastDate.getHours() - offset) // Adjust for Pacific Time
-
-  return forecastDate.toISOString().split("T")[0] // Return the adjusted date in YYYY-MM-DD format
 }
 
 // Calculate total rainfall for a day's forecast by summing the hourly values
