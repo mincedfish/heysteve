@@ -98,6 +98,7 @@ async function updateTrailStatuses() {
           // Only keep the forecast for future days (not today)
           return forecastDate > new Date();
         })
+        .slice(0, 3) // Ensure we only take up to the next 3 days
         .map((day) => ({
           date: adjustForecastDate(day.date), // Use the adjusted date here
           temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
