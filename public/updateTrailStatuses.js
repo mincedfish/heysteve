@@ -12,6 +12,13 @@ if (!fs.existsSync(filePath)) {
 const API_KEY = process.env.WEATHERAPI;
 const BASE_URL = "https://api.weatherapi.com/v1";
 
+// Get the current Pacific Time offset (in hours)
+function getPacificOffset() {
+  const now = new Date();
+  const offset = now.getHours() - new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" })).getHours();
+  return offset;
+}
+
 async function fetchWeatherData(lat, lon) {
   try {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`);
@@ -20,11 +27,16 @@ async function fetchWeatherData(lat, lon) {
     const historyData = {};
     for (let i = 1; i <= 5; i++) {
       const date = getPastDate(i);
+      console.log(`Fetching history for ${date}...`);
+
       const historyRes = await fetch(`${BASE_URL}/history.json?key=${API_KEY}&q=${lat},${lon}&dt=${date}`);
       if (historyRes.ok) {
         const data = await historyRes.json();
+        console.log(`History response for ${date}:`, data);
+
         const rainfallInches = data.forecast.forecastday[0]?.day?.totalprecip_in;
         const rainfallMm = data.forecast.forecastday[0]?.day?.totalprecip_mm;
+
         if (rainfallInches !== undefined && rainfallMm !== undefined) {
           historyData[date] = `${rainfallInches} in (${rainfallMm} mm)`;
         } else {
@@ -52,20 +64,13 @@ async function fetchWeatherData(lat, lon) {
   }
 }
 
+// Adjust for Pacific Time zone by subtracting the offset
 function getPastDate(daysAgo) {
+  const offset = getPacificOffset(); // Get the Pacific Time offset (in hours)
   const date = new Date();
   date.setDate(date.getDate() - daysAgo);
-
-  // Use Intl.DateTimeFormat to format the date in Pacific Time
-  const formattedDate = new Intl.DateTimeFormat('en-US', {
-    timeZone: 'America/Los_Angeles',
-    year: 'numeric',
-    month: '2-digit',
-    day: '2-digit',
-  }).format(date);
-
-  // Return the formatted date as YYYY-MM-DD
-  return formattedDate.split('/').reverse().join('-'); // Converts MM/DD/YYYY to YYYY-MM-DD
+  date.setHours(date.getHours() - offset); // Adjust date for Pacific Time Zone
+  return date.toISOString().split("T")[0]; // Return date in YYYY-MM-DD format
 }
 
 async function updateTrailStatuses() {
@@ -88,7 +93,7 @@ async function updateTrailStatuses() {
         rainfall_last_5_days: weatherData.history
       },
       forecast: weatherData.forecast.forecast.forecastday.map((day) => ({
-        date: day.date,
+        date: adjustForecastDate(day.date),
         temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
         condition: day.day.condition.text,
         rainfall: `${day.day.totalprecip_in} in (${day.day.totalprecip_mm} mm)`
@@ -98,6 +103,14 @@ async function updateTrailStatuses() {
 
   fs.writeFileSync(filePath, JSON.stringify(trailStatuses, null, 2));
   console.log("✅ trailStatuses.json has been updated!");
+}
+
+// Adjust forecast date to account for time zone offset
+function adjustForecastDate(date) {
+  const offset = getPacificOffset();
+  const forecastDate = new Date(date);
+  forecastDate.setHours(forecastDate.getHours() - offset); // Adjust for Pacific Time
+  return forecastDate.toISOString().split("T")[0]; // Return the adjusted date
 }
 
 updateTrailStatuses();
