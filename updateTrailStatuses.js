@@ -93,6 +93,12 @@ async function updateTrailStatuses() {
         rainfall_last_5_days: weatherData.history
       },
       forecast: weatherData.forecast.forecast.forecastday
+        .filter(day => {
+          const forecastDate = new Date(day.date);
+          // Exclude today's forecast
+          return forecastDate > new Date();
+        })
+        .slice(0, 3) // Ensure we only take up to the next 3 days
         .map((day) => ({
           date: adjustForecastDate(day.date), // Use the adjusted date here
           temperature: `${day.day.avgtemp_f}°F (${day.day.avgtemp_c}°C)`,
@@ -111,6 +117,13 @@ function adjustForecastDate(date) {
   const offset = getPacificOffset();
   const forecastDate = new Date(date);
   forecastDate.setHours(forecastDate.getHours() - offset); // Adjust for Pacific Time
+
+  // Add a check to ensure that we are not using today's date but the correct future date
+  const currentDate = new Date();
+  if (forecastDate.toDateString() === currentDate.toDateString()) {
+    forecastDate.setDate(forecastDate.getDate() + 1); // Move to the next day if the date is today
+  }
+
   return forecastDate.toISOString().split("T")[0]; // Return the adjusted date in YYYY-MM-DD format
 }
 
