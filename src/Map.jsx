@@ -162,6 +162,21 @@ const TrailMap = () => {
 
               <div style={{ marginTop: "30px" }}></div> {/* Space between sections */}
 
+              <h3>🌧 Historic Rainfall (Last 5 Days)</h3>
+              {selectedTrail.data.history?.rainfall_last_5_days ? (
+                <ul style={{ listStyleType: "none", paddingLeft: 0 }}>
+                  {Object.entries(selectedTrail.data.history.rainfall_last_5_days).map(([date, rainfall], index) => (
+                    <li key={index}>
+                      <strong>{formatForecastDate(date)}:</strong> {rainfall}
+                    </li>
+                  ))}
+                </ul>
+              ) : (
+                <p>No historic rainfall data available.</p>
+              )}
+
+              <div style={{ marginTop: "30px" }}></div> {/* Space between sections */}
+
               <h3>🔮 Weather Forecast</h3>
               {selectedTrail.data.forecast ? (
                 <div>
