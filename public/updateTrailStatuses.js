@@ -15,7 +15,7 @@ const BASE_URL = "https://api.weatherapi.com/v1";
 async function fetchWeatherData(lat, lon) {
   try {
     const currentRes = await fetch(`${BASE_URL}/current.json?key=${API_KEY}&q=${lat},${lon}`);
-    const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3`);
+    const forecastRes = await fetch(`${BASE_URL}/forecast.json?key=${API_KEY}&q=${lat},${lon}&days=3`); // Request 3-day forecast
 
     const historyData = {};
     // Fetch historical data for the last 5 days
