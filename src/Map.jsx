@@ -6,6 +6,13 @@ import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import trails from "../trails"
 
+// Helper function to parse and format the date correctly
+const parseDate = (dateString) => {
+  // Example: If the date format is "MM/DD/YYYY", adjust accordingly
+  const [month, day, year] = dateString.split('/');
+  return new Date(`${year}-${month}-${day}`);
+}
+
 const createIcon = (color) => {
   return new L.Icon({
     iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-${color}.png`,
@@ -38,37 +45,37 @@ const TrailMap = () => {
   const [error, setError] = useState(null)
   const [map, setMap] = useState(null)
 
-const fetchTrailStatuses = useCallback(async () => {
-  const basePath = process.env.PUBLIC_URL || "/heysteve"
-  const timestamp = new Date().getTime()
-  const jsonUrl = `${basePath}/trailStatuses.json?t=${timestamp}`
+  const fetchTrailStatuses = useCallback(async () => {
+    const basePath = process.env.PUBLIC_URL || "/heysteve"
+    const timestamp = new Date().getTime()
+    const jsonUrl = `${basePath}/trailStatuses.json?t=${timestamp}`
 
-  try {
-    const response = await fetch(jsonUrl, {
-      method: "GET",
-      headers: {
-        "Cache-Control": "no-cache, no-store, must-revalidate",
-        Pragma: "no-cache",
-        Expires: "0"
-      }
-    })
-    if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
-    const data = await response.json()
-    setTrailStatuses(data)
-  } catch (error) {
-    setError(error.message)
-  }
-}, [])
+    try {
+      const response = await fetch(jsonUrl, {
+        method: "GET",
+        headers: {
+          "Cache-Control": "no-cache, no-store, must-revalidate",
+          Pragma: "no-cache",
+          Expires: "0"
+        }
+      })
+      if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`)
+      const data = await response.json()
+      setTrailStatuses(data)
+    } catch (error) {
+      setError(error.message)
+    }
+  }, [])
 
-useEffect(() => {
-  console.log("Fetching trail statuses...")
-  fetchTrailStatuses()
-  const intervalId = setInterval(() => {
+  useEffect(() => {
     console.log("Fetching trail statuses...")
     fetchTrailStatuses()
-  }, 5 * 60 * 1000) // Fetch every 5 minutes
-  return () => clearInterval(intervalId)
-}, [fetchTrailStatuses])
+    const intervalId = setInterval(() => {
+      console.log("Fetching trail statuses...")
+      fetchTrailStatuses()
+    }, 5 * 60 * 1000) // Fetch every 5 minutes
+    return () => clearInterval(intervalId)
+  }, [fetchTrailStatuses])
 
   const getRideabilityInfo = (trailData) => {
     if (!trailData || !trailData.rideability) return { status: "Unknown", explanation: "" }
@@ -146,7 +153,7 @@ useEffect(() => {
                 <div>
                   {selectedTrail.data.forecast.map((day, index) => (
                     <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
-                      <p><strong>📆 Date:</strong> {new Date(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
+                      <p><strong>📆 Date:</strong> {parseDate(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
                       <p><strong>🌤 Condition:</strong> {day.condition}</p>
                       <p><strong>🌡 Temperature:</strong> {day.temperature}°F</p>
                       <p><strong>🌧 Rainfall:</strong> {day.rainfall} in</p>
