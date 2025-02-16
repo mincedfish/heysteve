@@ -22,10 +22,10 @@ if (fs.existsSync(trailsFile)) {
     console.error("❌ trails.js not found in public/. Make sure it exists.");
 }
 
-// Copy updateTrailStatuses.js to dist/
+// Copy updateTrailStatuses.js from root directory to dist/
 if (fs.existsSync(updateScriptFile)) {
     fs.copyFileSync(updateScriptFile, distUpdateScriptFile);
-    console.log("✅ updateTrailStatuses.js copied to dist/");
+    console.log("✅ updateTrailStatuses.js copied from root to dist/");
 } else {
     console.error("❌ updateTrailStatuses.js not found in the root directory. Make sure it exists.");
 }
