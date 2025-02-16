@@ -158,7 +158,6 @@ const TrailMap = () => {
               <p><strong>🌤 Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}</p>
               <p><strong>💨 Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
               <p><strong>💧 Humidity:</strong> {selectedTrail.data.current?.humidity || "N/A"}</p>
-              <p><strong>🌧 Rainfall (24h):</strong> {selectedTrail.data.history?.rainfall || "N/A"} in</p>
 
               <div style={{ marginTop: "30px" }}></div> {/* Space between sections */}
 
