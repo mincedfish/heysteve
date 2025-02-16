@@ -6,13 +6,14 @@ import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import trails from "../trails"
 
-// Helper function to parse and format the date correctly
-const parseDate = (dateString) => {
+// Helper function to parse and format the date and time correctly
+const parseDateTime = (dateString) => {
   // Check if the dateString contains a comma (e.g., "2/15/2025, 4:59:19 PM")
   if (dateString.includes(',')) {
-    const [datePart] = dateString.split(',') // Extract the date part (e.g., "2/15/2025")
+    const [datePart, timePart] = dateString.split(',') // Extract the date and time parts
     const [month, day, year] = datePart.split('/') // Split into month, day, year
-    return new Date(`${year}-${month}-${day}`) // Format to "YYYY-MM-DD"
+    const formattedDate = `${year}-${month}-${day} ${timePart.trim()}` // Format to "YYYY-MM-DD HH:MM:SS"
+    return new Date(formattedDate)
   }
   // For forecast dates already in "YYYY-MM-DD" format
   return new Date(dateString)
@@ -144,7 +145,7 @@ const TrailMap = () => {
           {selectedTrail.data ? (
             <>
               <h3>📍 Current Conditions</h3>
-              <p><strong>📅 Last Updated:</strong> {parseDate(selectedTrail.data.current?.lastChecked).toLocaleDateString(undefined, { month: "short", day: "numeric", year: "numeric" })}</p>
+              <p><strong>📅 Last Updated:</strong> {parseDateTime(selectedTrail.data.current?.lastChecked).toLocaleString()}</p>
               <p><strong>🌡 Temperature:</strong> {selectedTrail.data.current?.temperature || "N/A"}</p>
               <p><strong>🌤 Condition:</strong> {selectedTrail.data.current?.condition || "N/A"}</p>
               <p><strong>💨 Wind:</strong> {selectedTrail.data.current?.wind || "N/A"}</p>
@@ -158,7 +159,7 @@ const TrailMap = () => {
                 <div>
                   {selectedTrail.data.forecast.map((day, index) => (
                     <div key={index} style={{ marginBottom: "10px", borderBottom: "1px solid #ddd", paddingBottom: "10px" }}>
-                      <p><strong>📆 Date:</strong> {parseDate(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
+                      <p><strong>📆 Date:</strong> {parseDateTime(day.date).toLocaleDateString(undefined, { month: "short", day: "numeric" })}</p>
                       <p><strong>🌤 Condition:</strong> {day.condition}</p>
                       <p><strong>🌡 Temperature:</strong> {day.temperature}°F</p>
                       <p><strong>🌧 Rainfall:</strong> {day.rainfall} in</p>
