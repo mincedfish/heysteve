@@ -55,7 +55,17 @@ async function fetchWeatherData(lat, lon) {
 function getPastDate(daysAgo) {
   const date = new Date();
   date.setDate(date.getDate() - daysAgo);
-  return date.toISOString().split("T")[0];
+
+  // Use Intl.DateTimeFormat to format the date in Pacific Time
+  const formattedDate = new Intl.DateTimeFormat('en-US', {
+    timeZone: 'America/Los_Angeles',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+  }).format(date);
+
+  // Return the formatted date as YYYY-MM-DD
+  return formattedDate.split('/').reverse().join('-'); // Converts MM/DD/YYYY to YYYY-MM-DD
 }
 
 async function updateTrailStatuses() {
