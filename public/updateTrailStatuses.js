@@ -1,3 +1,5 @@
+process.env.TZ = "America/Los_Angeles"
+
 import fs from "fs"
 import fetch from "node-fetch"
 import trails from "./trails.js" // Import trails data
@@ -104,24 +106,32 @@ async function updateTrailStatuses() {
 // Ensure we get unique future dates for forecast
 function getUniqueForecastDays(forecastData) {
   const now = new Date()
-  const today = now.toISOString().split("T")[0] // Get today's date in YYYY-MM-DD format
-  console.log("Current date:", today)
+  const pacificNow = new Date(now.toLocaleString("en-US", { timeZone: "America/Los_Angeles" }))
+  const today = pacificNow.toISOString().split("T")[0]
+
+  console.log("Current date and time (Pacific):", pacificNow.toISOString())
+  console.log("Today's date:", today)
   console.log(
     "Forecast data received:",
-    forecastData.map((day) => ({ date: day.date, hour: day.hour[0].time })),
+    forecastData.map((day) => ({
+      date: day.date,
+      dateTime: day.date_epoch * 1000, // Convert epoch to milliseconds
+      firstHourTime: day.hour[0].time,
+    })),
   )
 
-  // Filter out today's forecast and sort the remaining days
-  const futureForecastDays = forecastData
-    .filter((day) => day.date > today)
-    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
+  // Sort all forecast days
+  const sortedForecastDays = forecastData.sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
-  // Take the first two days from the future forecast
-  const nextTwoDays = futureForecastDays.slice(0, 2)
+  // Take the next two days after today, regardless of whether today is included
+  const nextTwoDays = sortedForecastDays.filter((day) => day.date >= today).slice(1, 3)
 
   console.log(
     "Selected forecast days:",
-    nextTwoDays.map((day) => day.date),
+    nextTwoDays.map((day) => ({
+      date: day.date,
+      dateTime: new Date(day.date_epoch * 1000).toISOString(),
+    })),
   )
 
   return nextTwoDays.map((day) => ({
