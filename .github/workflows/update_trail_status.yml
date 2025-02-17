@@ -1,50 +1,50 @@
-name: Update Trail Statuses
-
-on:
-  schedule:
-    - cron: "0 * * * *"  # Runs every hour at minute 0
-  workflow_dispatch:  # Allows manual triggering
-
-jobs:
-  update-trail-status:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-        with:
-          persist-credentials: false
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "18"
-
-      - name: Install dependencies
-        run: npm install node-fetch
-
-      - name: Build project
-        run: npm run build  # Replace with your build command
-
-      - name: Copy build files to public directory
-        run: |
-          mkdir -p public
-          cp -r dist/* public/  # Copy everything from dist to public
-
-      - name: Fetch Weather Data and Update trailStatuses.json
-        env:
-          WEATHERAPI: ${{ secrets.WEATHERAPI }}
-        run: node public/updateTrailStatuses.js
-
-      - name: Deploy public/ to gh-pages
-        env:
-          GH_PAT: ${{ secrets.GH_PAT }}
-        run: |
-          cd public
-          git init
-          git config --global user.name "github-actions[bot]"
-          git config --global user.email "github-actions[bot]@users.noreply.github.com"
-          git add .
-          git commit -m "Auto-update trail statuses and trails.js"
-          git branch -M gh-pages
-          git push --force https://x-access-token:${GH_PAT}@github.com/mincedfish/heysteve.git gh-pages
+#name: Update Trail Statuses
+#
+#on:
+#  schedule:
+#    - cron: "0 * * * *"  # Runs every hour at minute 0
+#  workflow_dispatch:  # Allows manual triggering
+#
+#jobs:
+#  update-trail-status:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout repository
+#        uses: actions/checkout@v4
+#        with:
+#          persist-credentials: false
+#
+#      - name: Set up Node.js
+#        uses: actions/setup-node@v4
+#        with:
+#          node-version: "18"
+#
+#      - name: Install dependencies
+#        run: npm install node-fetch
+#
+#      - name: Build project
+#        run: npm run build  # Replace with your build command
+#
+#      - name: Copy build files to public directory
+#        run: |
+#          mkdir -p public
+#          cp -r dist/* public/  # Copy everything from dist to public
+#
+#      - name: Fetch Weather Data and Update trailStatuses.json
+#        env:
+#          WEATHERAPI: ${{ secrets.WEATHERAPI }}
+#        run: node public/updateTrailStatuses.js
+#
+#      - name: Deploy public/ to gh-pages
+#        env:
+#          GH_PAT: ${{ secrets.GH_PAT }}
+#        run: |
+#          cd public
+#          git init
+#          git config --global user.name "github-actions[bot]"
+#          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+#          git add .
+#          git commit -m "Auto-update trail statuses and trails.js"
+#          git branch -M gh-pages
+#          git push --force https://x-access-token:${GH_PAT}@github.com/mincedfish/heysteve.git gh-pages
